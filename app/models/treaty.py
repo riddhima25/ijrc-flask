@@ -2,9 +2,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
-# HI
-
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///tmp/test/db" #ask about this, what does it mean?
 db = SQLAlchemy(app)
