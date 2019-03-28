@@ -1,6 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+
+# HI
+
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///tmp/test/db" #ask about this, what does it mean?
 db = SQLAlchemy(app)
@@ -53,7 +57,7 @@ class Treaty(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     url = db.Column(db.String(1000))
-    
+
     def __init__(self, name, url):
         self.name = name
         self.url = url
@@ -62,7 +66,7 @@ class TreatyToCountry(db.Model):
     countryid = db.Column(db.Integer, primary_key=True)
     treatyid = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date(1000))
-    
+
     def __init__(self, date):
         self.date = date
 
@@ -70,13 +74,13 @@ class TreatyToCountry(db.Model):
     countryid = db.Column(db.Integer, primary_key=True)
     treatyid = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date(1000))
-    
+
     def __init__(self, date):
         self.date = date
 
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    
+
     def __init__(self, name):
         self.name = name
