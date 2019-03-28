@@ -48,3 +48,35 @@ class TtoR(db.Model):
     #ask about foreign key true and how refered to.
     def __repr__(self):
         return "<TtoR (rid ='%s', tid = '%s') %r>" % (self.rid , self.tid)
+
+class Treaty(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    url = db.Column(db.String(1000))
+    
+    def __init__(self, name, url):
+        self.name = name
+        self.url = url
+
+class TreatyToCountry(db.Model):
+    countryid = db.Column(db.Integer, primary_key=True)
+    treatyid = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date(1000))
+    
+    def __init__(self, date):
+        self.date = date
+
+class TreatyToCountry(db.Model):
+    countryid = db.Column(db.Integer, primary_key=True)
+    treatyid = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date(1000))
+    
+    def __init__(self, date):
+        self.date = date
+
+class Country(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    
+    def __init__(self, name):
+        self.name = name
