@@ -19,6 +19,12 @@ def about():
         'main/about.html', editable_html_obj=editable_html_obj)
 
 
+## ADDING, MODIFYING, DELETING RECORDS 
+
+
+
+## FILTERING -- USER SIDE
+
 @main.route('/category')
 def startForm():
     rights = db.session.query(Right).all()
@@ -32,3 +38,5 @@ def startForm():
     return render_template('/layouts/index.html')
 #     return render_template('/layouts/index.html', categories=categories,
 #     subcategories=subcategories, discrimination=discrimination)
+
+## FILTERING -- ADMIN SIDE 
