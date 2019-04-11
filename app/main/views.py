@@ -30,6 +30,7 @@ def startForm():
         categories.add(right.cat)
         subcategories.add(right.subcat)
         discrimination.add(right.disc)
-    # return render_template('/templates/layouts/index.html', categories=categories,
-    #subcategories=subcategories, discrimination=discrimination)
-    return render_template('main/about.html', editable_html_obj=editable_html_obj)
+    return render_template('/templates/layouts/index.html')
+#     return render_template('/templates/layouts/index.html', categories=categories,
+#     subcategories=subcategories, discrimination=discrimination)
+    #return render_template('main/about.html', editable_html_obj=editable_html_obj)
