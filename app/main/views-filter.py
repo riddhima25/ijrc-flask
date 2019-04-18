@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, session
 
 from app.models import EditableHTML
 from .. import db
-from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum
+from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Treaty
 
 from .. import db
 
@@ -12,7 +12,8 @@ def startLanding():
 
 @main.route('/start/<country>')
 def startLanding():
-    session['Country'] = country;
+    country_entry = db.session.query(Country).filter_by(name = country)
+    session['Country'] = country_entry;
     return render_template('/templates/layouts/landing.html', country = country)
 
 @main.route('/<country>/form')
@@ -63,4 +64,11 @@ def showDiscrimination():
 
 @main.route('/results')
 def showResults():
-    return render_template('/templates/layouts/client_side_results.html')
+    right = db.session.query(Right).filter_by(
+        cat=session['Category'], 
+        subcat=session['Subcategory'], 
+        disc=session['Discrimination']).all()
+    treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
+    forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
+    return render_template('/templates/layouts/client_side_results.html',
+        right = right, treaty = treaty, forums = forums)
