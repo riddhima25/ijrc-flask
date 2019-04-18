@@ -11,7 +11,7 @@ def startLanding():
     return render_template('/templates/layouts/landing.html')
 
 @main.route('/start/<country>')
-def startLanding():
+def endLanding(country):
     country_entry = db.session.query(Country).filter_by(name = country)
     session['Country'] = country_entry;
     return render_template('/templates/layouts/landing.html', country = country)
@@ -31,7 +31,7 @@ def startForm():
     return rights
 
 @main.route('/form/<category>')
-def showCategory():
+def showCategory(category):
     rights = db.session.query(Right).filter_by(cat=category).all()
     session['Category'] = category
     subcategories = []
@@ -44,7 +44,7 @@ def showCategory():
     return rights;
 
 @main.route('/form/<category>/<subcategory>')
-def showSubcategory():
+def showSubcategory(category, subcategory):
     rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory).all()
     session['Subcategory'] = subcategory
     discrimination = []
@@ -55,7 +55,7 @@ def showSubcategory():
     return rights;
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
-def showDiscrimination():
+def showDiscrimination(category, subcategory, discrimination):
     right = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
     session['Discrimination'] = right.disc
     #return render_template('/layouts/index.html', categories=category,
