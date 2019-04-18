@@ -16,7 +16,7 @@ def startLanding():
     session['Country'] = country_entry;
     return render_template('/templates/layouts/landing.html', country = country)
 
-@main.route('/<country>/form')
+@main.route('/form')
 def startForm():
     rights = db.session.query(Right).all()
     categories = []
@@ -26,7 +26,7 @@ def startForm():
         categories.append(right.cat)
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    # return render_template('/templates/layouts/index.html', categories=categories,
+    #return render_template('/layouts/index.html', categories=categories,
     #subcategories=subcategories, discrimination=discrimination)
     return rights
 
@@ -39,7 +39,7 @@ def showCategory():
     for right in rights:
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    #return render_template('/templates/layouts/index.html', categories=category,
+    #return render_template('/layouts/index.html', categories=category,
     #subcategories=subcategories, discrimination=discrimination)
     return rights;
 
@@ -50,7 +50,7 @@ def showSubcategory():
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
-    #return render_template('/templates/layouts/index.html', categories=category,
+    #return render_template('/layouts/index.html', categories=category,
     #subcategories=subcategory.subcategory, discrimination=discrimination)
     return rights;
 
@@ -58,7 +58,7 @@ def showSubcategory():
 def showDiscrimination():
     right = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
     session['Discrimination'] = right.disc
-    #return render_template('/templates/layouts/index.html', categories=category,
+    #return render_template('/layouts/index.html', categories=category,
     #subcategories=subcategory, discrimination=discrimination.discrimination)
     return right;
 
@@ -70,5 +70,6 @@ def showResults():
         disc=session['Discrimination']).all()
     treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
-    return render_template('/templates/layouts/client_side_results.html',
-        right = right, treaty = treaty, forums = forums)
+    #return render_template('/layouts/client_side_results.html',
+    #    right = right, treaty = treaty, forums = forums)
+    return [right, treaty, forums]
