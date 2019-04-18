@@ -81,6 +81,7 @@ def showDiscrimination(category, subcategory, discrimination):
     subcategories=subcategory, discrimination=discrimination.discrimination)
     #return right;
 
+## FILTERING -- ADMIN SIDE 
 @main.route('/results')
 def showResults():
     right = db.session.query(Right).filter_by(
@@ -91,6 +92,3 @@ def showResults():
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
     return render_template('/layouts/client_side_results.html',
         right = right, treaty = treaty, forums = forums)
-    #return [right, treaty, forums]
-
-## FILTERING -- ADMIN SIDE 
