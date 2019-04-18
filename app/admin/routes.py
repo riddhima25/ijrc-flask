@@ -8,57 +8,48 @@ from flask import (abort, jsonify, redirect, render_template, request,
 from .. import db
 
 @main.route('/country/<string:country>')
-def startForm():
-    for country in countryids:
-        countryids.append(db.session.query(Country).filter_by(cid=x))
-    return countryids
-    treatyids = db.session.query(TreatyToCountry).filter_by(country=country).with_entities(TreatyToCountry.tid)
-    for x in treatyids:
-        treaties.append(db.session.query(Treaty).filter_by(tid=x))
+def FilterTreatyByCountry(country):
+    country = db.session.query(Country).filter_by(country=country).first()
+    ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
+    treaties =[]
+    for entry in ttoc:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
     return treaties
 
 @main.route('/forum/<string:forum>')
-def startForm():
-    forums = db.session.query(Forum).filter_by(forum=forum).with_entities(TreatyToCountry.ttof)
-    for x in forums:
-        forumlist.append(db.session.query(Treaty).filter_by(ttof=x))
-    return forumlist
+def FilterTreatyByForum(forum):
+    forum = db.session.query(Forum).filter_by(name=forum).first()
+    ttof = db.session.query(TreatyToForum).filter_by(fid=forum.id).all()
+    treaties = []
+    for entry in ttof:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
 
 @main.route('/discrimination/<string:discrimination>')
-def startForm():
-    discriminations = db.session.query(Rights).filter_by(discrimination=discrimination).with_entities(Rights.discrimination)
-    for discs in discriminations:
-        disclist.append(db.session.query(Rights).filter_by(discrimination=discs))
-    return disclist
+def FilterTreatyByDiscrimination(discrimination):
+    rights = db.session.query(Rights).filter_by(discrimination=discrimination).first()
+    rightsids = db.session.query(TreatyToRights).filter_by(rid=rights.id).all()
+    treaties = []
+    for entry in rightsids:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
 
 @main.route('/subcategory/<string:subcategory>')
-def startForm():
-    subcategories = db.session.query(Rights).filter_by(subcategory=subcategory).with_entities(Rights.subcategory)
-    for subs in subcategories:
-        sublist.append(db.session.query(Rights).filter_by(subcategory=subs))
-    return sublist
-
-@main.route('/date/<datetime:date>')
-def startForm():
-    date = db.session.query(TreatyToCountry).filter_by(date=date).with_entities(TreatyToCountry.date)
-    return date
-    #because each treaty would have just one date for each coutry?
-
-@main.route('/multiple/<datetime:date>')
-def startForm():
-    date = db.session.query(Treaty).filter_by(date=date).with_entities(Treaty.date)
-    return date
-    #because each treaty would have just one date for each coutry?
-
-
-@main.route('/country/<string:country>')
-def startForm():
-    for country in countryids:
-        countryids.append(db.session.query(Country).filter_by(cid=x))
-    return countryids
-    #what to do after? is this correct? ask tomorrow!
-
-    treatyids = db.session.query(TreatyToCountry).filter_by(country=country).with_entities(TreatyToCountry.tid)
-    for  in treatyids:
-        treaties.append(db.session.query(Treaty).filter_by(tid=x))
+def FilterTreatyBySubcategory(subcategory):
+    subcategory = db.session.query(Rights).filter_by(subcat=subcategory).first()
+    subcategories = db.session.query(Rights).filter_by(fid=rights.id).all()
+    treaties = []
+    for entry in subcategories:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
     return treaties
+
+
+@main.route('/multiple/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>'country)
+def FilterTreatybyMultiple(multiple):
+    treatyids = db.session.query(TreatyToCountry).filter(TreatyToCountry.date>= date).with_entities(TreatyToCountry.tid)
+    for tid in treatyids:
+        treatylist.append(db.session.query(Treaty).filter_by(Treaty.id = tid)
+    return treaties
+
+@main.route('/multiple/<multiple:date>')
+def filterTreatyMultipleFilters():
