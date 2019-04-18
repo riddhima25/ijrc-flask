@@ -34,8 +34,8 @@ def endLanding(country):
     country_entry = db.session.query(Country).filter_by(name = country)
     session['Country'] = country_entry;
     return render_template('/layouts/landing.html', country = country)
-@main.route('/form')
 
+@main.route('/form')
 def startForm():
     rights = db.session.query(Right).all()
     categories = []
@@ -52,7 +52,7 @@ def startForm():
 @main.route('/form/<category>')
 def showCategory(category):
     rights = db.session.query(Right).filter_by(cat=category).all()
-    session['Category'] = category
+    #session['Category'] = category
     subcategories = []
     discrimination = []
     for right in rights:
