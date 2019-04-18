@@ -1,67 +1,66 @@
-import json
-import os
-import sys
+from flask import Blueprint, render_template, session
 
-from flask import (abort, jsonify, redirect, render_template, request,
-                   send_from_directory, session, url_for)
+from app.models import EditableHTML
+from .. import db
+from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum
 
 from .. import db
 
-@main.route('/category')
+@main.route('/start')
+def startLanding():
+    return render_template('/templates/layouts/landing.html')
+
+@main.route('/start/<country>')
+def startLanding():
+    session['Country'] = country;
+    return render_template('/templates/layouts/landing.html', country = country)
+
+@main.route('/<country>/form')
 def startForm():
     rights = db.session.query(Right).all()
-    categories = {}
-    subcategories = {}
-    discrimination = {}
+    categories = []
+    subcategories = []
+    discrimination = []
     for right in rights:
-        categories.add(right.category)
-        subcategories.add(right.subcategory)
-        discrimination.add(right.discrimination)
+        categories.append(right.cat)
+        subcategories.append(right.subcat)
+        discrimination.append(right.disc)
     # return render_template('/templates/layouts/index.html', categories=categories,
     #subcategories=subcategories, discrimination=discrimination)
     return rights
 
-@main.route('/category/<string:category>')
+@main.route('/form/<category>')
 def showCategory():
-    category = db.session.query(Right).filter_by(categoryId=category).all()
-    session['currentCategory'] = category
-    subcategories = {}
-    discrimination = {}
-    for right in category:
-        subcategories.add(right.subcategory)
-        discrimination.add(right.discrimination)
+    rights = db.session.query(Right).filter_by(cat=category).all()
+    session['Category'] = category
+    subcategories = []
+    discrimination = []
+    for right in rights:
+        subcategories.append(right.subcat)
+        discrimination.append(right.disc)
     #return render_template('/templates/layouts/index.html', categories=category,
     #subcategories=subcategories, discrimination=discrimination)
-    return category;
+    return rights;
 
-@main.route('/category/<string:category>/<string:subcategory>')
+@main.route('/form/<category>/<subcategory>')
 def showSubcategory():
-    subcategory = db.session.query(Right).filter_by(category=category, subcategory=subcategory).all()
-    session['currentSubcategory'] = subcategory.subcategory
-    discrimination = {}
-    for right in subcategory:
-        discrimination.add(right.discrimination)
+    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory).all()
+    session['Subcategory'] = subcategory
+    discrimination = []
+    for right in rights:
+        discrimination.append(right.disc)
     #return render_template('/templates/layouts/index.html', categories=category,
     #subcategories=subcategory.subcategory, discrimination=discrimination)
-    return subcategory;
+    return rights;
 
-@main.route('/category/<string:category>/<string:subcategory>/<string:discrimination>')
+@main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination():
-    discrimination = db.session.query(Right).filter_by(category=category, subcategory=subcategory, discrimination=discrimination).all()
-    session['currentDiscrimination'] = discrimination.discrimination
+    right = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
+    session['Discrimination'] = right.disc
     #return render_template('/templates/layouts/index.html', categories=category,
     #subcategories=subcategory, discrimination=discrimination.discrimination)
-    return discrimination
-
-@main.route('/category/<string:category>/<string:subcategory>/<string:discrimination>/<string:age>')
-def showAge():
-    age = db.session.query(Right).filter_by(category=category, subcategory=subcategory, discrimination=discrimination, age=age).all()
-    session['currentAge'] = age.age
-    #return render_template('/templates/layouts/index.html', categories=category,
-    #subcategories=subcategory, discrimination=discrimination, age=age.age)
-    return age
+    return right;
 
 @main.route('/results')
 def showResults():
-    return render_template('/templates/layouts/client_side_results.html', categories=category,
-    #subcategories=subcategory, discrimination=discrimination, age=age.age)
+    return render_template('/templates/layouts/client_side_results.html')

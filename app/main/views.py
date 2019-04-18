@@ -25,18 +25,18 @@ def about():
 
 ## FILTERING -- USER SIDE
 
-@main.route('/category')
+@main.route('/<country>/form')
 def startForm():
     rights = db.session.query(Right).all()
-    categories = {}
-    subcategories = {}
-    discrimination = {}
+    categories = []
+    subcategories = []
+    discrimination = []
     for right in rights:
-        categories.add(right.cat)
-        subcategories.add(right.subcat)
-        discrimination.add(right.disc)
-    return render_template('/layouts/index.html')
-#     return render_template('/layouts/index.html', categories=categories,
-#     subcategories=subcategories, discrimination=discrimination)
-
+        categories.append(right.cat)
+        subcategories.append(right.subcat)
+        discrimination.append(right.disc)
+    # return render_template('/templates/layouts/index.html', categories=categories,
+    #subcategories=subcategories, discrimination=discrimination)
+    return rights
+    
 ## FILTERING -- ADMIN SIDE 
