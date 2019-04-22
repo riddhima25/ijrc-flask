@@ -1,5 +1,14 @@
 from .. import db
 
+#table where each result is kept because we want to allow the user
+#to fill out the form multiple times
+class Results(db.Model):
+    __tablename__ = 'Results'
+    id = db.Column(db.Integer, primary_key=True)
+    right = db.relationship("Right", backref="Results", uselist=False)
+    treaty = db.relationship("Treaty", backref="Results", uselist=False)
+    forum = db.relationship("Forum", backref="Results", uselist=False)
+
 class Right(db.Model):
     __tablename__ = 'Right'
     id = db.Column(db.Integer, primary_key=True)
