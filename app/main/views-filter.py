@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, jsonify
+from flask import Blueprint, render_template, session, jsonify, url_for
 
 from app.models import EditableHTML
 from .. import db
@@ -26,9 +26,8 @@ def startForm():
         categories.append(right.cat)
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=categories,
-    #subcategories=subcategories, discrimination=discrimination)
-    return rights
+    return render_template('/layouts/index.html', categories=categories,
+    subcategories=subcategories, discrimination=discrimination)
 
 @main.route('/form/<category>')
 def showCategory(category):
@@ -38,9 +37,8 @@ def showCategory(category):
     for right in rights:
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategories, discrimination=discrimination)
-    return rights;
+    return render_template('/layouts/index.html', categories=category,
+    subcategories=subcategories, discrimination=discrimination)
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
@@ -48,19 +46,13 @@ def showSubcategory(category, subcategory):
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategory.subcategory, discrimination=discrimination)
-    return rights;
+    return render_template('/layouts/index.html', categories=category,
+    subcategories=subcategory.subcategory, discrimination=discrimination)
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
-    session['Category'] = category
-    session['Subcategory'] = subcategory
-    session['Discrimination'] = discrimination
-    right = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategory, discrimination=discrimination)
-    return right;
+    return render_template('/layouts/index.html', categories=category,
+    subcategories=subcategory, discrimination=discrimination);
 
 @main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
 def submitForm(category, subcategory, discrimination):
@@ -75,11 +67,12 @@ def submitForm(category, subcategory, discrimination):
         treaty = treaty,
         forum = forums
     )
-    db.session.add(result)
-    db.session.commit
+    db.session.add(result);
+    db.session.commit();
     return jsonify(dict(redirect=url_for('layouts.index')))
 
 @main.route('/results')
 def showResults():
+    results = Results.query.all();
     return render_template('/layouts/client_side_results.html',
-        rights = rights, treaty = treaty, forums = forums)
+        results=results)
