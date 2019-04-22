@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, jsonify
 
 from app.models import EditableHTML
 from .. import db
-from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Treaty
+from ..models import Results, Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Treaty
 
 from .. import db
 
@@ -33,7 +33,6 @@ def startForm():
 @main.route('/form/<category>')
 def showCategory(category):
     rights = db.session.query(Right).filter_by(cat=category).all()
-    session['Category'] = category
     subcategories = []
     discrimination = []
     for right in rights:
@@ -46,7 +45,6 @@ def showCategory(category):
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
     rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory).all()
-    session['Subcategory'] = subcategory
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
@@ -56,20 +54,32 @@ def showSubcategory(category, subcategory):
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
+    session['Category'] = category
+    session['Subcategory'] = subcategory
+    session['Discrimination'] = discrimination
     right = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
-    session['Discrimination'] = right.disc
     #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategory, discrimination=discrimination.discrimination)
+    #subcategories=subcategory, discrimination=discrimination)
     return right;
+
+@main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
+def submitForm(category, subcategory, discrimination):
+    right = db.session.query(Right).filter_by(
+        cat=category, 
+        subcat=subcategory, 
+        disc=discrimination).all()
+    treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
+    forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
+    result = Results(
+        right = right,
+        treaty = treaty,
+        forum = forums
+    )
+    db.session.add(result)
+    db.session.commit
+    return jsonify(dict(redirect=url_for('layouts.index')))
 
 @main.route('/results')
 def showResults():
-    right = db.session.query(Right).filter_by(
-        cat=session['Category'], 
-        subcat=session['Subcategory'], 
-        disc=session['Discrimination']).all()
-    treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
-    forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
-    #return render_template('/layouts/client_side_results.html',
-    #    right = right, treaty = treaty, forums = forums)
-    return [right, treaty, forums]
+    return render_template('/layouts/client_side_results.html',
+        rights = rights, treaty = treaty, forums = forums)
