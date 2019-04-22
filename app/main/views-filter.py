@@ -26,14 +26,8 @@ def startForm():
         categories.append(right.cat)
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-<<<<<<< HEAD
     return render_template('/layouts/index.html', categories=categories,
     subcategories=subcategories, discrimination=discrimination)
-=======
-    return render_temp:wqlate('/layouts/index.html', categories=categories,
-    subcategories=subcategories, discrimination=discrimination)
-    # return rights
->>>>>>> 9505d3c7e5ef94efad38b56b8fc8237c55916290
 
 @main.route('/form/<category>')
 def showCategory(category):
@@ -45,10 +39,6 @@ def showCategory(category):
         discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=category,
     subcategories=subcategories, discrimination=discrimination)
-<<<<<<< HEAD
-=======
-    # return rights
->>>>>>> 9505d3c7e5ef94efad38b56b8fc8237c55916290
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
@@ -58,13 +48,6 @@ def showSubcategory(category, subcategory):
         discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=category,
     subcategories=subcategory.subcategory, discrimination=discrimination)
-<<<<<<< HEAD
-
-@main.route('/form/<category>/<subcategory>/<discrimination>')
-def showDiscrimination(category, subcategory, discrimination):
-    return render_template('/layouts/index.html', categories=category,
-    subcategories=subcategory, discrimination=discrimination);
-=======
     # return rights
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
@@ -76,7 +59,6 @@ def showDiscrimination(category, subcategory, discrimination):
     return render_template('/layouts/index.html', categories=category,
     subcategories=subcategory, discrimination=discrimination)
     # return right
->>>>>>> 9505d3c7e5ef94efad38b56b8fc8237c55916290
 
 @main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
 def submitForm(category, subcategory, discrimination):
