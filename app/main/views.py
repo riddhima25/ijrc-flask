@@ -217,9 +217,9 @@ def startForm():
         categories.append(right.cat)
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    # return render_template('/layouts/index.html', categories=categories,
-    # subcategories=subcategories, discrimination=discrimination)
-    return str(rights)
+    return render_template('/layouts/index.html', categories=categories,
+    subcategories=subcategories, discrimination=discrimination)
+    # return str(rights)
 
 @main.route('/form/<category>')
 def showCategory(category):
@@ -232,7 +232,7 @@ def showCategory(category):
         discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=category,
     subcategories=subcategories, discrimination=discrimination)
-    #return rights;
+    #return rights
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
@@ -243,7 +243,7 @@ def showSubcategory(category, subcategory):
         discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=category,
     subcategories=subcategory.subcategory, discrimination=discrimination)
-    #return rights;
+    #return rights
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
@@ -251,7 +251,7 @@ def showDiscrimination(category, subcategory, discrimination):
     session['Discrimination'] = right.disc
     return render_template('/layouts/index.html', categories=category,
     subcategories=subcategory, discrimination=discrimination.discrimination)
-    #return right;
+    #return right
 
 ## FILTERING -- ADMIN SIDE 
 @main.route('/results')

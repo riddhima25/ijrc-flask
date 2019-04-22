@@ -13,7 +13,7 @@ def startLanding():
 @main.route('/start/<country>')
 def endLanding(country):
     country_entry = db.session.query(Country).filter_by(name = country)
-    session['Country'] = country_entry;
+    session['Country'] = country_entry
     return render_template('/templates/layouts/landing.html', country = country)
 
 @main.route('/form')
@@ -26,9 +26,9 @@ def startForm():
         categories.append(right.cat)
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=categories,
-    #subcategories=subcategories, discrimination=discrimination)
-    return rights
+    return render_temp:wqlate('/layouts/index.html', categories=categories,
+    subcategories=subcategories, discrimination=discrimination)
+    # return rights
 
 @main.route('/form/<category>')
 def showCategory(category):
@@ -38,9 +38,9 @@ def showCategory(category):
     for right in rights:
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategories, discrimination=discrimination)
-    return rights;
+    return render_template('/layouts/index.html', categories=category,
+    subcategories=subcategories, discrimination=discrimination)
+    # return rights
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
@@ -48,9 +48,9 @@ def showSubcategory(category, subcategory):
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategory.subcategory, discrimination=discrimination)
-    return rights;
+    return render_template('/layouts/index.html', categories=category,
+    subcategories=subcategory.subcategory, discrimination=discrimination)
+    # return rights
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
@@ -58,9 +58,9 @@ def showDiscrimination(category, subcategory, discrimination):
     session['Subcategory'] = subcategory
     session['Discrimination'] = discrimination
     right = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategory, discrimination=discrimination)
-    return right;
+    return render_template('/layouts/index.html', categories=category,
+    subcategories=subcategory, discrimination=discrimination)
+    # return right
 
 @main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
 def submitForm(category, subcategory, discrimination):
