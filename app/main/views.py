@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, session, jsonify
+from flask import Blueprint, render_template, session, jsonify, request, redirect, flash
 
 from app.models import EditableHTML
 from .. import db
 from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum
-#from forms import TreatySearchForm
+from .forms import TreatySearchForm
 
 main = Blueprint('main', __name__)
 
@@ -274,9 +274,9 @@ def search():
   if request.method == 'POST':
     return search_results(search)
  
-  return render_template('/layouts/admin_search.html', form=search)
+  return render_template('/layouts/search.html', form=search)
 
-@app.route('/search_results')
+@main.route('/search_results')
 def search_results(search):
     results = []
     search_string = search.data['search']
@@ -289,4 +289,4 @@ def search_results(search):
       return redirect('/')
     else:
       # display results
-      return render_template('/layouts/admin_search.html', results=results)
+      return render_template('/layouts/search.html', results=results)
