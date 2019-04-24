@@ -1,5 +1,5 @@
 from .. import db
-import flask.ext.whooshalchemy
+#import flask.ext.whooshalchemy
 
 #table where each result is kept because we want to allow the user
 #to fill out the form multiple times
@@ -54,7 +54,7 @@ class Country(db.Model):
 
 class Treaty(db.Model):
     __tablename__ = 'Treaty'
-    __searchable__ = ['name'] 
+    __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     url = db.Column(db.String(1000))
@@ -108,5 +108,3 @@ class TreatyToCountry(db.Model):
 
     def __init__(self, date):
         self.date = date
-
-
