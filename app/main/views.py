@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, session, jsonify
 from app.models import EditableHTML
 from .. import db
 from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum
+#from forms import TreatySearchForm
 
 main = Blueprint('main', __name__)
 
@@ -264,3 +265,28 @@ def showResults():
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
     return render_template('/layouts/client_side_results.html',
         right = right, treaty = treaty, forums = forums)
+
+
+## SEARCH
+@main.route('/search', methods=['GET', 'POST'])
+def search():
+  search = TreatySearchForm(request.form)
+  if request.method == 'POST':
+    return search_results(search)
+ 
+  return render_template('/layouts/admin_search.html', form=search)
+
+@app.route('/search_results')
+def search_results(search):
+    results = []
+    search_string = search.data['search']
+ 
+    if search.data['search'] == '':
+      results = db_session.query(Treaty).all()
+ 
+    if not results:
+      flash('No results found!')
+      return redirect('/')
+    else:
+      # display results
+      return render_template('/layouts/admin_search.html', results=results)
