@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, jsonify, request, redirect, flash
+from flask import Blueprint, render_template, session, jsonify, request, redirect, flash, url_for
 
 from app.models import EditableHTML
 from .. import db
@@ -225,46 +225,55 @@ def startForm():
 @main.route('/form/<category>')
 def showCategory(category):
     rights = db.session.query(Right).filter_by(cat=category).all()
-    #session['Category'] = category
     subcategories = []
     discrimination = []
     for right in rights:
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    return render_template('/layouts/index.html', categories=category,
-    subcategories=subcategories, discrimination=discrimination)
-    #return rights
+    #return render_template('/layouts/index.html', categories=category,
+    #subcategories=subcategories, discrimination=discrimination)
+    return str(rights)
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
     rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory).all()
-    session['Subcategory'] = subcategory
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
-    return render_template('/layouts/index.html', categories=category,
-    subcategories=subcategory.subcategory, discrimination=discrimination)
-    #return rights
+    #return render_template('/layouts/index.html', categories=category,
+    #subcategories=subcategory.subcategory, discrimination=discrimination)
+    return str(rights)
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
-    right = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
-    session['Discrimination'] = right.disc
-    return render_template('/layouts/index.html', categories=category,
-    subcategories=subcategory, discrimination=discrimination.discrimination)
-    #return right
+    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
+    #return render_template('/layouts/index.html', categories=category,
+    #subcategories=subcategory, discrimination=discrimination);
+    return str(rights)
 
 ## FILTERING -- ADMIN SIDE 
-@main.route('/results')
-def showResults():
+@main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
+def submitForm(category, subcategory, discrimination):
     right = db.session.query(Right).filter_by(
-        cat=session['Category'], 
-        subcat=session['Subcategory'], 
-        disc=session['Discrimination']).all()
+        cat=category, 
+        subcat=subcategory, 
+        disc=discrimination).all()
     treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
+    result = Results(
+        right = right,
+        treaty = treaty,
+        forum = forums
+    )
+    db.session.add(result);
+    db.session.commit();
+    return jsonify(dict(redirect=url_for('layouts.index')))
+
+@main.route('/results')
+def showResults():
+    results = Results.query.all();
     return render_template('/layouts/client_side_results.html',
-        right = right, treaty = treaty, forums = forums)
+        results=results)
 
 
 ## SEARCH
