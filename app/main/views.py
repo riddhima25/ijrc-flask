@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, session, jsonify, request, redirec
 
 from app.models import EditableHTML
 from .. import db
-from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum
+from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Treaty
 from .forms import TreatySearchForm
 
 main = Blueprint('main', __name__)
@@ -49,7 +49,7 @@ def add_forum(n):
 @main.route('/add/ttor/<int:ri>/<int:ti>')
 def add_ttor(ri, ti):
   if TreatyToRight.query.filter_by(rid=ri, tid=ti).first() is None:
-    ttor = TreatytoRight(rid=ri, tid=ti)
+    ttor = TreatyToRight(rid=ri, tid=ti)
     db.session.add(ttor)
     db.session.commit()
   return 'success'
@@ -270,16 +270,17 @@ def showResults():
 ## SEARCH
 @main.route('/search', methods=['GET', 'POST'])
 def search(results=None):
-  search = TreatySearchForm(request.form)
+  form = TreatySearchForm(request.form)
   #treaties = models.Course.query
 
   if request.method == 'POST':
-      print(search.treatyName.data)
+      return (search.treatyName.data)
       #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%'))
 
   #courses = courses.order_by(models.Course.name).all()
 
-  return render_template('/layouts/search.html', results = results)
+
+  return render_template('/layouts/search.html', results = results, form=form)
 
 ## ADMIN FILTERING
 @main.route('/country/<string:country>')
@@ -316,5 +317,6 @@ def FilterBySubcategory(subcat):
     treaties = []
     for entry in rights:
         treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
-    return str(treaties)
+    return treaties
+
 
