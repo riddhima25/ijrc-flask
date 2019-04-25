@@ -280,25 +280,17 @@ def showResults():
     db.session.commit();
     return jsonify(dict(redirect=url_for('layouts.index')))
 
-@main.route('/results')
-def showResults():
-    results = Results.query.all();
-    return render_template('/layouts/client_side_results.html', 
-      country = session['Country'],
-      date = session['Date'],
-      results=results)
-
 ## SEARCH
-@main.route('/search', methods=['GET', 'POST'])
-def search(results=None):
-  form = TreatySearchForm(request.form)
-  #treaties = models.Course.query
+# @main.route('/search', methods=['GET', 'POST'])
+# def search(results=None):
+#   form = TreatySearchForm(request.form)
+#   #treaties = models.Course.query
 
-  if request.method == 'POST':
-      return (search.treatyName.data)
-      #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%')
+#   if request.method == 'POST':
+#       return (search.treatyName.data)
+#       #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%')
 
-  return render_template('/layouts/search.html', results = results, form=form)
+#   return render_template('/layouts/search.html', results = results, form=form)
 
 ## ADMIN FILTERING
 @main.route('/country/<string:country>')
