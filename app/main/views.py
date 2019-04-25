@@ -211,7 +211,7 @@ def endLanding(country):
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     return render_template('/layouts/landing.html', countries = country, months = months)
 
-@main.route('/start/<country>'), methods = ['POST'])
+@main.route(('/start/<country>'), methods = ['POST'])
 def submitLanding(country):
     country = db.session.query(Country).filter_by(name = country).all()
     db.session.add(country);
@@ -230,11 +230,7 @@ def startForm():
         discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=categories,
     subcategories=subcategories, discrimination=discrimination)
-<<<<<<< HEAD
     # return str(rights)
-=======
-    return str(rights)
->>>>>>> 2c5aaf51053175f0a592c89e9e7ccb91a534d588
 
 @main.route('/form/<category>')
 def showCategory(category):
@@ -265,7 +261,6 @@ def showDiscrimination(category, subcategory, discrimination):
     subcategories=[subcategory], discrimination=[discrimination]);
     #return str(rights)
 
-<<<<<<< HEAD
 ## FILTERING -- ADMIN SIDE
 
 @main.route('/results')
@@ -274,15 +269,6 @@ def showResults():
         cat=session['Category'],
         subcat=session['Subcategory'],
         disc=session['Discrimination']).all()
-=======
-## FILTERING -- ADMIN SIDE 
-@main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
-def submitForm(category, subcategory, discrimination):
-    right = db.session.query(Right).filter_by(
-        cat=category, 
-        subcat=subcategory, 
-        disc=discrimination).first()
->>>>>>> 2c5aaf51053175f0a592c89e9e7ccb91a534d588
     treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
     result = Results(
@@ -294,24 +280,6 @@ def submitForm(category, subcategory, discrimination):
     db.session.commit();
     return jsonify(dict(redirect=url_for('layouts.index')))
 
-<<<<<<< HEAD
-@main.route('/country/<string:country>')
-def FilterTreatyByCountry(country):
-    country = db.session.query(country).filter_by(country=country).first()
-    ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
-    treaties =[]
-    for entry in ttoc:
-        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
-    return treaties2
-
-
-## SEARCH
-@main.route('/search', methods=['GET', 'POST'])
-def search():
-  search = TreatySearchForm(request.form)
-  if request.method == 'POST':
-    return search_results(search)
-=======
 @main.route('/results')
 def showResults():
     results = Results.query.all();
@@ -328,27 +296,14 @@ def search(results=None):
 
   if request.method == 'POST':
       return (search.treatyName.data)
-      #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%'))
->>>>>>> 2c5aaf51053175f0a592c89e9e7ccb91a534d588
-
-  return render_template('/layouts/search.html', form=search)
-
-<<<<<<< HEAD
-@main.route('/search_results')
-def search_results(search):
-    results = []
-    search_string = search.data['search']
-
-    if search.data['search'] == '':
-      results = db_session.query(Treaty).all()
-=======
+      #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%')
 
   return render_template('/layouts/search.html', results = results, form=form)
 
 ## ADMIN FILTERING
 @main.route('/country/<string:country>')
 def FilterTreatyByCountry(country):
-    country = db.session.query(Country).filter_by(country=country).first()
+    country = db.session.query(Country).filter_by(name=country).first()
     ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
     treaties =[]
     for entry in ttoc:
@@ -366,7 +321,7 @@ def FilterTreatyByForum(forum):
 
 @main.route('/discrimination/<string:discrimination>')
 def FilterByDiscrimination(discrimination):
-    right = db.session.query(Right).filter_by(discrimination=discrimination).first()
+    right = db.session.query(Right).filter_by(disc=discrimination).first()
     rightsids = db.session.query(TreatyToRight).filter_by(rid=rights.id).all()
     treaties = []
     for entry in rightsids:
@@ -382,11 +337,3 @@ def FilterBySubcategory(subcat):
         treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
     return treaties
 
->>>>>>> 2c5aaf51053175f0a592c89e9e7ccb91a534d588
-
-    if not results:
-      flash('No results found!')
-      return redirect('/')
-    else:
-      # display results
-      return render_template('/layouts/search.html', results=results)
