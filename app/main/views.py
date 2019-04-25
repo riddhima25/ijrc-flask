@@ -269,24 +269,14 @@ def showResults():
 
 ## SEARCH
 @main.route('/search', methods=['GET', 'POST'])
-def search():
+def search(results=None):
   search = TreatySearchForm(request.form)
-  if request.method == 'POST':
-    return search_results(search)
- 
-  return render_template('/layouts/search.html', form=search)
+  #treaties = models.Course.query
 
-@main.route('/search_results')
-def search_results(search):
-    results = []
-    search_string = search.data['search']
- 
-    if search.data['search'] == '':
-      results = db_session.query(Treaty).all()
- 
-    if not results:
-      flash('No results found!')
-      return redirect('/')
-    else:
-      # display results
-      return render_template('/layouts/search.html', results=results)
+  if request.method == 'POST':
+      print(search.treatyName.data)
+      #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%'))
+
+  #courses = courses.order_by(models.Course.name).all()
+
+  return render_template('/layouts/search.html', results = results)
