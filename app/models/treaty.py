@@ -101,10 +101,10 @@ class TreatyToCountry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cid = db.Column(db.Integer, db.ForeignKey('Country.id'))
     tid = db.Column(db.Integer, db.ForeignKey('Treaty.id'))
-    date = db.Column(db.Date)
+    date = db.Column(db.String(80))
     treaty = db.relationship("Treaty", backref="TreatyToCountry", uselist=False)
     country= db.relationship("Country", backref="TreatyToCountry", uselist=False)
 
 
-    def __init__(self, date):
+    def __init__(self, cid, tid, date):
         self.date = date

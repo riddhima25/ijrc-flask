@@ -20,7 +20,7 @@ def about():
         'main/about.html', editable_html_obj=editable_html_obj)
 
 
-## ADDING, MODIFYING, DELETING RECORDS 
+## ADDING, MODIFYING, DELETING RECORDS
 
 @main.route('/add/right/<string:c>/<string:s>/<string:d>')
 def add_right(c, s, d):
@@ -49,7 +49,7 @@ def add_forum(n):
 @main.route('/add/ttor/<int:ri>/<int:ti>')
 def add_ttor(ri, ti):
   if TreatyToRight.query.filter_by(rid=ri, tid=ti).first() is None:
-    ttor = TreatytoRight(rid=ri, tid=ti)
+    ttor = TreatyToRight(rid=ri, tid=ti)
     db.session.add(ttor)
     db.session.commit()
   return 'success'
@@ -62,12 +62,12 @@ def add_treaty(n, u):
     db.session.commit()
   return 'success'
 
-@main.route('/add/ttoc/<int:ci>/<int:ri>/<string:d>')
-def add_ttoc(ci, ri, d):
+@main.route('/add/ttoc/<int:ci>/<int:ti>/<string:d>')
+def add_ttoc(ci, ti, d):
   if TreatyToCountry.query.filter_by(cid=ci, tid=ti, date=d).first() is None:
     ttoc = TreatyToCountry(cid=ci, tid=ti, date=d)
     db.session.add(ttoc)
-    db.commit()
+    db.session.commit()
   return 'success'
 
 @main.route('/add/country/<string:n>')
@@ -75,7 +75,7 @@ def add_country(n):
   if Country.query.filter_by(name=n).first() is None:
     country = Country(name= n)
     db.session.add(country)
-    db.commit()
+    db.session.commit()
   return 'success'
 
 @main.route('/delete/rights/cat/<string:c>')
@@ -218,9 +218,9 @@ def startForm():
         categories.append(right.cat)
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=categories,
-    #subcategories=subcategories, discrimination=discrimination)
-    return str(rights)
+    return render_template('/layouts/index.html', categories=categories,
+    subcategories=subcategories, discrimination=discrimination)
+    # return str(rights)
 
 @main.route('/form/<category>')
 def showCategory(category):
@@ -254,67 +254,49 @@ def showDiscrimination(category, subcategory, discrimination):
     subcategories=subcategory, discrimination=discrimination.discrimination)
     #return right
 
-## FILTERING -- ADMIN SIDE 
+## FILTERING -- ADMIN SIDE
+
 @main.route('/results')
 def showResults():
     right = db.session.query(Right).filter_by(
-        cat=session['Category'], 
-        subcat=session['Subcategory'], 
+        cat=session['Category'],
+        subcat=session['Subcategory'],
         disc=session['Discrimination']).all()
     treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
     return render_template('/layouts/client_side_results.html',
         right = right, treaty = treaty, forums = forums)
 
-
-## SEARCH
-@main.route('/search', methods=['GET', 'POST'])
-def search(results=None):
-  search = TreatySearchForm(request.form)
-  #treaties = models.Course.query
-
-  if request.method == 'POST':
-      print(search.treatyName.data)
-      #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%'))
-
-  #courses = courses.order_by(models.Course.name).all()
-
-  return render_template('/layouts/search.html', results = results)
-
-## ADMIN FILTERING
 @main.route('/country/<string:country>')
 def FilterTreatyByCountry(country):
-    country = db.session.query(Country).filter_by(country=country).first()
+    country = db.session.query(country).filter_by(country=country).first()
     ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
     treaties =[]
     for entry in ttoc:
         treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
-    return treaties
+    return treaties2
 
-@main.route('/forum/<string:forum>')
-def FilterTreatyByForum(forum):
-    forum = db.session.query(Forum).filter_by(name=forum).first()
-    ttof = db.session.query(TreatyToForum).filter_by(fid=forum.id).all()
-    treaties = []
-    for entry in ttof:
-        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
-    return treaties
 
-@main.route('/discrimination/<string:discrimination>')
-def FilterByDiscrimination(discrimination):
-    right = db.session.query(Right).filter_by(discrimination=discrimination).first()
-    rightsids = db.session.query(TreatyToRight).filter_by(rid=rights.id).all()
-    treaties = []
-    for entry in rightsids:
-        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
-    return treaties
+## SEARCH
+@main.route('/search', methods=['GET', 'POST'])
+def search():
+  search = TreatySearchForm(request.form)
+  if request.method == 'POST':
+    return search_results(search)
 
-@main.route('/subcategory/<string:subcat>')
-def FilterBySubcategory(subcat):
-    right = db.session.query(Right).filter_by(subcat=subcat).first()
-    rights = db.session.query(TreatyToRight).filter_by(rid=right.id).all()
-    treaties = []
-    for entry in rights:
-        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
-    return str(treaties)
+  return render_template('/layouts/search.html', form=search)
 
+@main.route('/search_results')
+def search_results(search):
+    results = []
+    search_string = search.data['search']
+
+    if search.data['search'] == '':
+      results = db_session.query(Treaty).all()
+
+    if not results:
+      flash('No results found!')
+      return redirect('/')
+    else:
+      # display results
+      return render_template('/layouts/search.html', results=results)
