@@ -11,21 +11,21 @@
 <rect id = "background_image"></rect>
 <rect id = "bottom_rect"></rect>
 <rect id = "main_rect">
-	<p class = "left_header1">Country United States</p>
-	<p class = "right_header1">Date 04/30/2015</p>
+	<p class = "left_header1">Country {{ country }}</p>
+	<p class = "right_header1">Date 04/25/19</p>
 	<p class = "left_header2">Your Responses</p>
 	<p class = "right_header2">You can file a Human Rights Complaint with:</p>
 	<table>
-		{% for right in rights %}
+		{% for result in results %}
 		<tr>
 			<td id = "left">
-				<p>{{ right.cat }}</p>
-				<p>{{ right.subcat }}</p>
-				<p>{{ right.disc }}</p>
+				<p>{{ result.right.cat }}</p>
+				<p>{{ result.right.subcat }}</p>
+				<p>{{ result.right.disc }}</p>
 			</td>
 			<td id = "right">
-				{% for forum in forums %}
-				<a href= {{ forum.id }}>{{ forum.name }}</a>
+				{% for forum in result.forums %}
+				<p>{{ forum.name }}</a>
 				{% endfor %}
 			</td>
 		</tr>

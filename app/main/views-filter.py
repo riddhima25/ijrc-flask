@@ -48,6 +48,13 @@ def showSubcategory(category, subcategory):
         discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=category,
     subcategories=subcategory.subcategory, discrimination=discrimination)
+<<<<<<< HEAD
+
+@main.route('/form/<category>/<subcategory>/<discrimination>')
+def showDiscrimination(category, subcategory, discrimination):
+    return render_template('/layouts/index.html', categories=category,
+    subcategories=subcategory, discrimination=discrimination);
+=======
     # return rights
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
@@ -59,6 +66,7 @@ def showDiscrimination(category, subcategory, discrimination):
     return render_template('/layouts/index.html', categories=category,
     subcategories=subcategory, discrimination=discrimination)
     # return right
+>>>>>>> 4f32a31eab749d0475afa23028bd4a5f1c1bc7f2
 
 @main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
 def submitForm(category, subcategory, discrimination):
