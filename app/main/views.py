@@ -218,9 +218,9 @@ def startForm():
         categories.append(right.cat)
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    return render_template('/layouts/index.html', categories=categories,
-    subcategories=subcategories, discrimination=discrimination)
-    # return str(rights)
+    #return render_template('/layouts/index.html', categories=categories,
+    #subcategories=subcategories, discrimination=discrimination)
+    return str(rights)
 
 @main.route('/form/<category>')
 def showCategory(category):
@@ -280,3 +280,41 @@ def search(results=None):
   #courses = courses.order_by(models.Course.name).all()
 
   return render_template('/layouts/search.html', results = results)
+
+## ADMIN FILTERING
+@main.route('/country/<string:country>')
+def FilterTreatyByCountry(country):
+    country = db.session.query(Country).filter_by(country=country).first()
+    ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
+    treaties =[]
+    for entry in ttoc:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
+
+@main.route('/forum/<string:forum>')
+def FilterTreatyByForum(forum):
+    forum = db.session.query(Forum).filter_by(name=forum).first()
+    ttof = db.session.query(TreatyToForum).filter_by(fid=forum.id).all()
+    treaties = []
+    for entry in ttof:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
+
+@main.route('/discrimination/<string:discrimination>')
+def FilterByDiscrimination(discrimination):
+    right = db.session.query(Right).filter_by(discrimination=discrimination).first()
+    rightsids = db.session.query(TreatyToRight).filter_by(rid=rights.id).all()
+    treaties = []
+    for entry in rightsids:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
+
+@main.route('/subcategory/<string:subcat>')
+def FilterBySubcategory(subcat):
+    right = db.session.query(Right).filter_by(subcat=subcat).first()
+    rights = db.session.query(TreatyToRight).filter_by(rid=right.id).all()
+    treaties = []
+    for entry in rights:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return str(treaties)
+
