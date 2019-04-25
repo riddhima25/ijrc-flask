@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, session, jsonify, request, redirec
 
 from app.models import EditableHTML
 from .. import db
-from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum
+from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results
 from .forms import TreatySearchForm
 
 main = Blueprint('main', __name__)
@@ -200,13 +200,23 @@ def delete_ttoc_cid_tid(t, c):
 
 @main.route('/start')
 def startLanding():
-    return render_template('/layouts/landing.html')
+    countries = db.session.query(Country).all()
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    return render_template('/layouts/landing.html', countries = countries, months = months)
 
 @main.route('/start/<country>')
 def endLanding(country):
-    country_entry = db.session.query(Country).filter_by(name = country)
-    session['Country'] = country_entry
-    return render_template('/layouts/landing.html', country = country)
+    country = db.session.query(Country).filter_by(name = country).all()
+    session['Country'] = country
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    return render_template('/layouts/landing.html', countries = country, months = months)
+
+@main.route('/start/<country>'), methods = ['POST'])
+def submitLanding(country):
+    country = db.session.query(Country).filter_by(name = country).all()
+    db.session.add(country);
+    db.session.commit();
+    return jsonify(dict(redirect=url_for('layouts.index')))
 
 @main.route('/form')
 def startForm():
@@ -218,8 +228,8 @@ def startForm():
         categories.append(right.cat)
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=categories,
-    #subcategories=subcategories, discrimination=discrimination)
+    return render_template('/layouts/index.html', categories=categories,
+    subcategories=subcategories, discrimination=discrimination)
     return str(rights)
 
 @main.route('/form/<category>')
@@ -230,9 +240,9 @@ def showCategory(category):
     for right in rights:
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategories, discrimination=discrimination)
-    return str(rights)
+    return render_template('/layouts/index.html', categories=[category],
+    subcategories=subcategories, discrimination=discrimination)
+    #return str(rights)
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
@@ -240,16 +250,16 @@ def showSubcategory(category, subcategory):
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategory.subcategory, discrimination=discrimination)
-    return str(rights)
+    return render_template('/layouts/index.html', categories=[category],
+    subcategories=[subcategory], discrimination=discrimination)
+    #return str(rights)
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
     rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
-    #return render_template('/layouts/index.html', categories=category,
-    #subcategories=subcategory, discrimination=discrimination);
-    return str(rights)
+    return render_template('/layouts/index.html', categories=[category],
+    subcategories=[subcategory], discrimination=[discrimination]);
+    #return str(rights)
 
 ## FILTERING -- ADMIN SIDE 
 @main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
@@ -257,7 +267,7 @@ def submitForm(category, subcategory, discrimination):
     right = db.session.query(Right).filter_by(
         cat=category, 
         subcat=subcategory, 
-        disc=discrimination).all()
+        disc=discrimination).first()
     treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
     result = Results(
@@ -272,9 +282,10 @@ def submitForm(category, subcategory, discrimination):
 @main.route('/results')
 def showResults():
     results = Results.query.all();
-    return render_template('/layouts/client_side_results.html',
-        results=results)
-
+    return render_template('/layouts/client_side_results.html', 
+      country = session['Country'],
+      date = session['Date'],
+      results=results)
 
 ## SEARCH
 @main.route('/search', methods=['GET', 'POST'])
