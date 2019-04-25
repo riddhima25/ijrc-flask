@@ -23,9 +23,9 @@
           <p>I believe the violation I faced is under the category: </p>
 
           <select name="violation">
-              <option value="hr_1">Violation A</option>
-              <option value="hr_2">Violation B</option>
-              <option value="hr_3">Violation C</option>
+              {% for category in categories %}
+              <option value="hr_1">{{ category }}</option>
+              {% endfor %}
           </select>
 
           <p>Specifically within the area of: </p>
@@ -33,11 +33,18 @@
 
         <div class="area">
           <select name="Month">
-              <option value="hr_1">Area A</option>
-              <option value="hr_2">Area B</option>
-              <option value="hr_3">Area C</option>
+              {% for subcategory in subcategories %}
+              <option value="hr_1">{{ subcategory }}</option>
+              {% endfor %}
           </select>
+        <p>On the basis of: </p>
         </div>
+        <div class="discrimination">
+            <select name="Month">
+                {% for discrimination in discrimination %}
+                <option value="hr_1">{{ discrimination }}</option>
+                {% endfor %}
+            </select>
         <br>
         <label class="container">ADD ANOTHER CATEGORY
             <input type="checkbox" checked="checked">

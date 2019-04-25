@@ -24,27 +24,27 @@
         <p>I want to know where I can report a violation of my human rights that took place in country</p>
 
         <select name="country">
-            <option value="hr_1">Country</option>
-            <option value="hr_2">Rigths</option>
-            <option value="hr_3">Violation</option>
+            {% for country in countries %}
+            <option value="hr_1">{{ country }}</option>
+            {% endfor %}
         </select>
 
         <p>on the following date</p>
         <div class="Date">
           <select name="Month">
-              <option value="hr_1">MONTH</option>
-              <option value="hr_2">Rigths</option>
-              <option value="hr_3">Violation</option>
+              {% for month in months %}
+              <option value="hr_1">{{ month }}</option>
+              {% endfor %}
           </select>
           <select name="Day">
-              <option value="hr_1">DAY</option>
-              <option value="hr_2">Rigths</option>
-              <option value="hr_3">Violation</option>
+              {% for x in range(31) %}
+              <option value="hr_1">{{ x + 1 }}</option>
+              {% endfor %}
           </select>
           <select name="Year">
-              <option value="hr_1">YEAR</option>
-              <option value="hr_2">Rigths</option>
-              <option value="hr_3">Violation</option>
+              {% for x in range(30) %}
+              <option value="hr_1">{{ x + 1990 }}</option>
+              {% endfor %}
           </select>
         </div>
         <button>NEXT: CATEGORY OF VIOLATION</button>

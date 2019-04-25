@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, session, jsonify, request, redirect, flash
+from flask import Blueprint, render_template, session, jsonify, request, redirect, flash, url_for
 
 from app.models import EditableHTML
 from .. import db
-from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum
+from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results, Treaty
 from .forms import TreatySearchForm
 
 main = Blueprint('main', __name__)
@@ -200,13 +200,23 @@ def delete_ttoc_cid_tid(t, c):
 
 @main.route('/start')
 def startLanding():
-    return render_template('/layouts/landing.html')
+    countries = db.session.query(Country).all()
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    return render_template('/layouts/landing.html', countries = countries, months = months)
 
 @main.route('/start/<country>')
 def endLanding(country):
-    country_entry = db.session.query(Country).filter_by(name = country)
-    session['Country'] = country_entry
-    return render_template('/layouts/landing.html', country = country)
+    country = db.session.query(Country).filter_by(name = country).all()
+    session['Country'] = country
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    return render_template('/layouts/landing.html', countries = country, months = months)
+
+@main.route('/start/<country>'), methods = ['POST'])
+def submitLanding(country):
+    country = db.session.query(Country).filter_by(name = country).all()
+    db.session.add(country);
+    db.session.commit();
+    return jsonify(dict(redirect=url_for('layouts.index')))
 
 @main.route('/form')
 def startForm():
@@ -220,40 +230,42 @@ def startForm():
         discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=categories,
     subcategories=subcategories, discrimination=discrimination)
+<<<<<<< HEAD
     # return str(rights)
+=======
+    return str(rights)
+>>>>>>> 2c5aaf51053175f0a592c89e9e7ccb91a534d588
 
 @main.route('/form/<category>')
 def showCategory(category):
     rights = db.session.query(Right).filter_by(cat=category).all()
-    #session['Category'] = category
     subcategories = []
     discrimination = []
     for right in rights:
         subcategories.append(right.subcat)
         discrimination.append(right.disc)
-    return render_template('/layouts/index.html', categories=category,
+    return render_template('/layouts/index.html', categories=[category],
     subcategories=subcategories, discrimination=discrimination)
-    #return rights
+    #return str(rights)
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
     rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory).all()
-    session['Subcategory'] = subcategory
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
-    return render_template('/layouts/index.html', categories=category,
-    subcategories=subcategory.subcategory, discrimination=discrimination)
-    #return rights
+    return render_template('/layouts/index.html', categories=[category],
+    subcategories=[subcategory], discrimination=discrimination)
+    #return str(rights)
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
-    right = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
-    session['Discrimination'] = right.disc
-    return render_template('/layouts/index.html', categories=category,
-    subcategories=subcategory, discrimination=discrimination.discrimination)
-    #return right
+    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
+    return render_template('/layouts/index.html', categories=[category],
+    subcategories=[subcategory], discrimination=[discrimination]);
+    #return str(rights)
 
+<<<<<<< HEAD
 ## FILTERING -- ADMIN SIDE
 
 @main.route('/results')
@@ -262,11 +274,27 @@ def showResults():
         cat=session['Category'],
         subcat=session['Subcategory'],
         disc=session['Discrimination']).all()
+=======
+## FILTERING -- ADMIN SIDE 
+@main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
+def submitForm(category, subcategory, discrimination):
+    right = db.session.query(Right).filter_by(
+        cat=category, 
+        subcat=subcategory, 
+        disc=discrimination).first()
+>>>>>>> 2c5aaf51053175f0a592c89e9e7ccb91a534d588
     treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
-    return render_template('/layouts/client_side_results.html',
-        right = right, treaty = treaty, forums = forums)
+    result = Results(
+        right = right,
+        treaty = treaty,
+        forum = forums
+    )
+    db.session.add(result);
+    db.session.commit();
+    return jsonify(dict(redirect=url_for('layouts.index')))
 
+<<<<<<< HEAD
 @main.route('/country/<string:country>')
 def FilterTreatyByCountry(country):
     country = db.session.query(country).filter_by(country=country).first()
@@ -283,9 +311,29 @@ def search():
   search = TreatySearchForm(request.form)
   if request.method == 'POST':
     return search_results(search)
+=======
+@main.route('/results')
+def showResults():
+    results = Results.query.all();
+    return render_template('/layouts/client_side_results.html', 
+      country = session['Country'],
+      date = session['Date'],
+      results=results)
+
+## SEARCH
+@main.route('/search', methods=['GET', 'POST'])
+def search(results=None):
+  form = TreatySearchForm(request.form)
+  #treaties = models.Course.query
+
+  if request.method == 'POST':
+      return (search.treatyName.data)
+      #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%'))
+>>>>>>> 2c5aaf51053175f0a592c89e9e7ccb91a534d588
 
   return render_template('/layouts/search.html', form=search)
 
+<<<<<<< HEAD
 @main.route('/search_results')
 def search_results(search):
     results = []
@@ -293,6 +341,48 @@ def search_results(search):
 
     if search.data['search'] == '':
       results = db_session.query(Treaty).all()
+=======
+
+  return render_template('/layouts/search.html', results = results, form=form)
+
+## ADMIN FILTERING
+@main.route('/country/<string:country>')
+def FilterTreatyByCountry(country):
+    country = db.session.query(Country).filter_by(country=country).first()
+    ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
+    treaties =[]
+    for entry in ttoc:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
+
+@main.route('/forum/<string:forum>')
+def FilterTreatyByForum(forum):
+    forum = db.session.query(Forum).filter_by(name=forum).first()
+    ttof = db.session.query(TreatyToForum).filter_by(fid=forum.id).all()
+    treaties = []
+    for entry in ttof:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
+
+@main.route('/discrimination/<string:discrimination>')
+def FilterByDiscrimination(discrimination):
+    right = db.session.query(Right).filter_by(discrimination=discrimination).first()
+    rightsids = db.session.query(TreatyToRight).filter_by(rid=rights.id).all()
+    treaties = []
+    for entry in rightsids:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
+
+@main.route('/subcategory/<string:subcat>')
+def FilterBySubcategory(subcat):
+    right = db.session.query(Right).filter_by(subcat=subcat).first()
+    rights = db.session.query(TreatyToRight).filter_by(rid=right.id).all()
+    treaties = []
+    for entry in rights:
+        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    return treaties
+
+>>>>>>> 2c5aaf51053175f0a592c89e9e7ccb91a534d588
 
     if not results:
       flash('No results found!')
