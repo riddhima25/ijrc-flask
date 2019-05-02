@@ -7,7 +7,6 @@ from .forms import TreatySearchForm
 
 main = Blueprint('main', __name__)
 
-
 @main.route('/')
 def index():
     return render_template('main/index.html')
@@ -281,16 +280,18 @@ def showResults():
     return jsonify(dict(redirect=url_for('layouts.index')))
 
 ## SEARCH
-# @main.route('/search', methods=['GET', 'POST'])
-# def search(results=None):
-#   form = TreatySearchForm(request.form)
-#   #treaties = models.Course.query
+@main.route('/search', methods=['GET', 'POST'])
+def search(results=None):
+  form = TreatySearchForm(request.form)
+  treaties = []
+  if request.method == 'POST':
+    #return (form.data['treatyName'])
+    results = db.session.query(Treaty).filter_by(name=form.data['treatyName']).all()
+    for result in results:
+      treaties.append(result)
+    return render_template('/layouts/search.html', results = results, form=form)
 
-#   if request.method == 'POST':
-#       return (search.treatyName.data)
-#       #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%')
-
-#   return render_template('/layouts/search.html', results = results, form=form)
+  return render_template('/layouts/search.html', results = results, form=form)
 
 ## ADMIN FILTERING
 @main.route('/country/<string:country>')
