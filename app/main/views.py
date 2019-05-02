@@ -2,11 +2,10 @@ from flask import Blueprint, render_template, session, jsonify, request, redirec
 
 from app.models import EditableHTML
 from .. import db
-from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results
+from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results, Treaty
 from .forms import TreatySearchForm
 
 main = Blueprint('main', __name__)
-
 
 @main.route('/')
 def index():
@@ -20,7 +19,7 @@ def about():
         'main/about.html', editable_html_obj=editable_html_obj)
 
 
-## ADDING, MODIFYING, DELETING RECORDS 
+## ADDING, MODIFYING, DELETING RECORDS
 
 @main.route('/add/right/<string:c>/<string:s>/<string:d>')
 def add_right(c, s, d):
@@ -49,7 +48,7 @@ def add_forum(n):
 @main.route('/add/ttor/<int:ri>/<int:ti>')
 def add_ttor(ri, ti):
   if TreatyToRight.query.filter_by(rid=ri, tid=ti).first() is None:
-    ttor = TreatytoRight(rid=ri, tid=ti)
+    ttor = TreatyToRight(rid=ri, tid=ti)
     db.session.add(ttor)
     db.session.commit()
   return 'success'
@@ -62,12 +61,12 @@ def add_treaty(n, u):
     db.session.commit()
   return 'success'
 
-@main.route('/add/ttoc/<int:ci>/<int:ri>/<string:d>')
-def add_ttoc(ci, ri, d):
+@main.route('/add/ttoc/<int:ci>/<int:ti>/<string:d>')
+def add_ttoc(ci, ti, d):
   if TreatyToCountry.query.filter_by(cid=ci, tid=ti, date=d).first() is None:
     ttoc = TreatyToCountry(cid=ci, tid=ti, date=d)
     db.session.add(ttoc)
-    db.commit()
+    db.session.commit()
   return 'success'
 
 @main.route('/add/country/<string:n>')
@@ -75,7 +74,7 @@ def add_country(n):
   if Country.query.filter_by(name=n).first() is None:
     country = Country(name= n)
     db.session.add(country)
-    db.commit()
+    db.session.commit()
   return 'success'
 
 @main.route('/delete/rights/cat/<string:c>')
@@ -210,7 +209,7 @@ def endLanding(country):
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     return render_template('/layouts/landing.html', countries = [country], months = months)
 
-@main.route('/start/<country>'), methods = ['POST'])
+@main.route(('/start/<country>'), methods = ['POST'])
 def submitLanding(country):
     country = db.session.query(Country).filter_by(name = country).all()
     db.session.add(country);
@@ -229,7 +228,7 @@ def startForm():
         discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=categories,
     subcategories=subcategories, discrimination=discrimination)
-    return str(rights)
+    # return str(rights)
 
 @main.route('/form/<category>')
 def showCategory(category):
@@ -260,13 +259,14 @@ def showDiscrimination(category, subcategory, discrimination):
     subcategories=[subcategory], discrimination=[discrimination]);
     #return str(rights)
 
-## FILTERING -- ADMIN SIDE 
-@main.route('/form/<category>/<subcategory>/<discrimination>', methods = ['POST'])
-def submitForm(category, subcategory, discrimination):
+## FILTERING -- ADMIN SIDE
+
+@main.route('/results')
+def showResults():
     right = db.session.query(Right).filter_by(
-        cat=category, 
-        subcat=subcategory, 
-        disc=discrimination).first()
+        cat=session['Category'],
+        subcat=session['Subcategory'],
+        disc=session['Discrimination']).all()
     treaty = db.session.query(Treaty).filter_by(ttor = right.ttor, ttoc = session['Country'].ttoc)
     forums = db.session.query(Forum).filter_by(ttof = treaty.ttof)
     result = Results(
@@ -278,32 +278,24 @@ def submitForm(category, subcategory, discrimination):
     db.session.commit();
     return jsonify(dict(redirect=url_for('layouts.index')))
 
-@main.route('/results')
-def showResults():
-    results = Results.query.all();
-    return render_template('/layouts/client_side_results.html', 
-      country = session['Country'],
-      date = session['Date'],
-      results=results)
-
 ## SEARCH
 @main.route('/search', methods=['GET', 'POST'])
 def search(results=None):
-  search = TreatySearchForm(request.form)
-  #treaties = models.Course.query
-
+  form = TreatySearchForm(request.form)
+  treaties = []
   if request.method == 'POST':
-      print(search.treatyName.data)
-      #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%'))
+    #return (form.data['treatyName'])
+    results = db.session.query(Treaty).filter_by(name=form.data['treatyName']).all()
+    for result in results:
+      treaties.append(result)
+    return render_template('/layouts/search.html', results = results, form=form)
 
-  #courses = courses.order_by(models.Course.name).all()
-
-  return render_template('/layouts/search.html', results = results)
+  return render_template('/layouts/search.html', results = results, form=form)
 
 ## ADMIN FILTERING
 @main.route('/country/<string:country>')
 def FilterTreatyByCountry(country):
-    country = db.session.query(Country).filter_by(country=country).first()
+    country = db.session.query(Country).filter_by(name=country).first()
     ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
     treaties =[]
     for entry in ttoc:
@@ -321,7 +313,7 @@ def FilterTreatyByForum(forum):
 
 @main.route('/discrimination/<string:discrimination>')
 def FilterByDiscrimination(discrimination):
-    right = db.session.query(Right).filter_by(discrimination=discrimination).first()
+    right = db.session.query(Right).filter_by(disc=discrimination).first()
     rightsids = db.session.query(TreatyToRight).filter_by(rid=rights.id).all()
     treaties = []
     for entry in rightsids:
@@ -335,5 +327,5 @@ def FilterBySubcategory(subcat):
     treaties = []
     for entry in rights:
         treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
-    return str(treaties)
+    return treaties
 
