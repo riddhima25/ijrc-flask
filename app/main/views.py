@@ -207,9 +207,8 @@ def startLanding():
 @main.route('/start/<country>')
 def endLanding(country):
     country = db.session.query(Country).filter_by(name = country).all()
-    session['Country'] = country
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    return render_template('/layouts/landing.html', countries = country, months = months)
+    return render_template('/layouts/landing.html', countries = [country], months = months)
 
 @main.route('/start/<country>'), methods = ['POST'])
 def submitLanding(country):
