@@ -283,7 +283,7 @@ def showResults():
 @main.route('/results')
 def showResults():
     results = Results.query.all();
-    return render_template('/layouts/client_side_results.html', 
+    return render_template('/layouts/client_side_results.html',
       country = session['Country'],
       date = session['Date'],
       results=results)
@@ -336,4 +336,3 @@ def FilterBySubcategory(subcat):
     for entry in rights:
         treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
     return treaties
-
