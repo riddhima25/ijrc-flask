@@ -285,10 +285,7 @@ def search(results=None):
   form = TreatySearchForm(request.form)
   treaties = []
   if request.method == 'POST':
-    #return (form.data['treatyName'])
     results = db.session.query(Treaty).filter_by(name=form.data['treatyName']).all()
-    for result in results:
-      treaties.append(result)
     return render_template('/layouts/search.html', results = results, form=form)
 
   return render_template('/layouts/search.html', results = results, form=form)
