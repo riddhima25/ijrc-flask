@@ -23,27 +23,38 @@ def about():
 
 @main.route('/add/right/<string:c>/<string:s>/<string:d>')
 def add_right(c, s, d):
-    if Right.query.filter_by(cat=c, subcat=s, disc=d).first() is None:
-      right = Right(cat=c, subcat=s, disc=d)
-      db.session.add(right)
-      db.session.commit()
-    return 'success'
+  print(c)
+  print(s)
+  print(d)
+  result = Right.query.filter_by(cat=c, subcat=s, disc=d).with_entities(Right.id).first()
+  if result is None:
+    right = Right(cat=c, subcat=s, disc=d)
+    db.session.add(right)
+    db.session.commit()
+    return Right.query.filter_by(cat=c, subcat=s, disc=d).with_entities(Right.id).first()[0]
+  else: 
+    return result[0]
 
 @main.route('/add/ttof/<int:fi>/<int:ti>')
 def add_ttof(fi, ti):
-    if TreatyToForum.query.filter_by(fid=fi, tid=ti).first() is None:
-      tttof = TreatyToForum(fid=fi, tid=ti)
-      db.session.add(ttof)
-      db.session.commit()
-    return 'success'
+  if TreatyToForum.query.filter_by(fid=fi, tid=ti).first() is None:
+    ttof = TreatyToForum(fid=fi, tid=ti)
+    db.session.add(ttof)
+    db.session.commit()
+  return 'success'
 
 @main.route('/add/forum/<string:n>')
 def add_forum(n):
-  if Forum.query.filter_by(name=n).first() is None:
+  print(n)
+  result = Forum.query.filter_by(name=n).with_entities(Forum.id).first()
+  if result is None:
+    print('went in here')
     forum = Forum(name=n)
     db.session.add(forum)
     db.session.commit()
-  return 'success'
+    return Forum.query.filter_by(name=n).with_entities(Forum.id).first()[0]
+  else:
+    return result[0]
 
 @main.route('/add/ttor/<int:ri>/<int:ti>')
 def add_ttor(ri, ti):
@@ -55,11 +66,16 @@ def add_ttor(ri, ti):
 
 @main.route('/add/treaty/<string:n>/<string:u>')
 def add_treaty(n, u):
-  if db.session.query(Treaty).filter_by(name=n, url=u).first() is None:
+  print(n)
+  print(u)
+  result = Treaty.query.filter_by(name=n, url=u).with_entities(Treaty.id).first()
+  if result is None:
     treaty = Treaty(name=n, url=u)
     db.session.add(treaty)
     db.session.commit()
-  return 'success'
+    return Treaty.query.filter_by(name=n, url=u).with_entities(Treaty.id).first()[0]
+  else:
+    return result[0]
 
 @main.route('/add/ttoc/<int:ci>/<int:ti>/<string:d>')
 def add_ttoc(ci, ti, d):
@@ -71,11 +87,15 @@ def add_ttoc(ci, ti, d):
 
 @main.route('/add/country/<string:n>')
 def add_country(n):
-  if Country.query.filter_by(name=n).first() is None:
+  print(n)
+  result = Country.query.filter_by(name=n).with_entities(Country.id).first()
+  if result is None:
     country = Country(name= n)
     db.session.add(country)
     db.session.commit()
-  return 'success'
+    return Country.query.filter_by(name=n).with_entities(Country.id).first()[0]
+  else:
+    return result[0]
 
 @main.route('/delete/rights/cat/<string:c>')
 def delete_rights_category(c):
@@ -326,3 +346,37 @@ def FilterBySubcategory(subcat):
         treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
     return treaties
 
+## TESTING ROUTES ## 
+
+@main.route('/testrights')
+def testAddingR():
+    rights = db.session.query(Right).all()
+    categories = []
+    subcategories = []
+    discrimination = []
+    for right in rights:
+        categories.append(right.cat)
+        subcategories.append(right.subcat)
+        discrimination.append(right.disc)
+    return str(rights)
+
+@main.route('/testtreaties')
+def testAddingT():
+    treaties = db.session.query(Treaty).all()
+    return str(treaties)
+
+@main.route('/testforums')
+def testAddingF():
+    forums = db.session.query(Forum).all()
+    return str(forums)
+
+@main.route('/testcountries')
+def testAddingC():
+    countries = db.session.query(Country).all()
+    return str(countries)
+@main.route('/date/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>'country)
+def FilterTreatybyDate(date):
+    treatyids = db.session.query(TreatyToCountry).filter(TreatyToCountry.date>= date).with_entities(TreatyToCountry.tid)
+    for tid in treatyids:
+        treatylist.append(db.session.query(Treaty).filter_by(Treaty.id = tid)
+    return treaties
