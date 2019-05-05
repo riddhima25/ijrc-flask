@@ -55,7 +55,7 @@ def add_ttor(ri, ti):
 
 @main.route('/add/treaty/<string:n>/<string:u>')
 def add_treaty(n, u):
-  if Treaty.query.filter_by(name=n, url=u) is None:
+  if db.session.query(Treaty).filter_by(name=n, url=u).first() is None:
     treaty = Treaty(name=n, url=u)
     db.session.add(treaty)
     db.session.commit()
@@ -284,7 +284,7 @@ def search(results=None):
   form = TreatySearchForm(request.form)
   treaties = []
   if request.method == 'POST':
-    results = db.session.query(Treaty).filter_by(name=form.data['treatyName']).all()
+    results = db.session.query(Treaty).filter(Treaty.name.contains(form.data['treatyName'])).all()
     return render_template('/layouts/search.html', results = results, form=form)
 
   return render_template('/layouts/search.html', results = results, form=form)
