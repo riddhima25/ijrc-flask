@@ -13,6 +13,7 @@
 
 {% from "macros/_formhelpers.html" import render_field %}
 <form method=post>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <dl>
     {{ render_field(form.treatyName) }}
   </dl>

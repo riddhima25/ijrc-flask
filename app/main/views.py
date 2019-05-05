@@ -7,7 +7,6 @@ from .forms import TreatySearchForm
 
 main = Blueprint('main', __name__)
 
-
 @main.route('/')
 def index():
     return render_template('main/index.html')
@@ -227,9 +226,8 @@ def startLanding():
 @main.route('/start/<country>')
 def endLanding(country):
     country = db.session.query(Country).filter_by(name = country).all()
-    session['Country'] = country
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    return render_template('/layouts/landing.html', countries = country, months = months)
+    return render_template('/layouts/landing.html', countries = [country], months = months)
 
 @main.route(('/start/<country>'), methods = ['POST'])
 def submitLanding(country):
@@ -301,16 +299,15 @@ def showResults():
     return jsonify(dict(redirect=url_for('layouts.index')))
 
 ## SEARCH
-# @main.route('/search', methods=['GET', 'POST'])
-# def search(results=None):
-#   form = TreatySearchForm(request.form)
-#   #treaties = models.Course.query
+@main.route('/search', methods=['GET', 'POST'])
+def search(results=None):
+  form = TreatySearchForm(request.form)
+  treaties = []
+  if request.method == 'POST':
+    results = db.session.query(Treaty).filter_by(name=form.data['treatyName']).all()
+    return render_template('/layouts/search.html', results = results, form=form)
 
-#   if request.method == 'POST':
-#       return (search.treatyName.data)
-#       #courses = courses.filter(models.Course.name.like('%' + search.treatyName.data + '%')
-
-#   return render_template('/layouts/search.html', results = results, form=form)
+  return render_template('/layouts/search.html', results = results, form=form)
 
 ## ADMIN FILTERING
 @main.route('/country/<string:country>')
@@ -377,3 +374,9 @@ def testAddingF():
 def testAddingC():
     countries = db.session.query(Country).all()
     return str(countries)
+@main.route('/date/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>'country)
+def FilterTreatybyDate(date):
+    treatyids = db.session.query(TreatyToCountry).filter(TreatyToCountry.date>= date).with_entities(TreatyToCountry.tid)
+    for tid in treatyids:
+        treatylist.append(db.session.query(Treaty).filter_by(Treaty.id = tid)
+    return treaties
