@@ -52,7 +52,7 @@
 
 {% macro mobile_nav(current_user, dropdown=None) %}
     <div class="mobile only row">
-        <div class="ui fixed inverted black main menu">
+        <div class="ui fixed inverted main menu">
             {{ header_items(current_user) }}
             <div class="right menu">
                 <a class="icon item" id="open-nav"><i class="sidebar icon"></i></a>
@@ -82,11 +82,11 @@
 {% endmacro %}
 
 {% macro desktop_nav(current_user, dropdown=None) %}
-<div class="nav_bar navbar-white bg-white">
+<div class="nav_bar">
     <div class="menu_filler">
-      <div class="ui fixed inverted main menu">
-        <a class="item nav_item navbar-brand img-responsive" href="/">
-          <img src="{{ url_for('static', filename='images/nav-logo.jpg') }}" class="d-inline-block align-top img-responsive" style="height: 25px; width: 400px; position: fixed; margin-top: 5px;"></img>
+      <div class="ui fixed main menu">
+        <a class="item nav_item" href="/">
+          <img src="{{ url_for('static', filename='images/nav-logo.jpg') }}" class="d-inline-block align-top img-responsive" style="height: auto; width: 30%; position: fixed; margin-top: 3px"></img>
         </a>
       </div>
     </div>

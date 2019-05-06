@@ -18,6 +18,10 @@ def about():
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
 
+@main.route('/admin')
+def adminHome():
+    return render_template('layouts/admin_search.html')
+
 
 ## ADDING, MODIFYING, DELETING RECORDS
 

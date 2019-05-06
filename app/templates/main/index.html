@@ -1,17 +1,51 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-    <div class="ui text container">
-      <h1>Hello {% if not (current_user.is_authenticated) %} world {% else %} {{ current_user.full_name() }} {% endif %},</h1>
 
-        <p>This is <a href="http://hack4impact.org">Hack4Impact</a>'s web application template. We'll use this as a
-        foundation for each of our <a href="http://flask.pocoo.org">Flask</a> projects. The goal is to reduce the work
-        necessary to get a new project off the ground, by providing boilerplate code (such as account management
-        facilities), as well as uncontroversial and extensible defaults. We have integrated an
-        <a href="http://sass-lang.com">SCSS</a>-based asset pipeline based around a (fantastic!) framework
-        called <a href="http://semantic-ui.com">Semantic UI</a>. Much of this code is appropriated from the examples
-        in Miguel Grinberg's book, <a href="http://flaskbook.com"><em>Flask Web Development</em></a>.</p>
+  <div class="popup">
+    <div class="wrapper">
+      <div class = "text">
 
-        <p>{{ lipsum(6) }}</p>
+        <div class="violation">
+          <p>I believe the violation I faced is under the category: </p>
+
+          <select name="violation">
+              {% for category in categories %}
+              <option value="hr_1">{{ category }}</option>
+              {% endfor %}
+          </select>
+
+          <p>Specifically within the area of: </p>
+        </div>
+
+        <div class="area">
+          <select name="Month">
+              {% for subcategory in subcategories %}
+              <option value="hr_1">{{ subcategory }}</option>
+              {% endfor %}
+          </select>
+        <p>On the basis of: </p>
+        </div>
+        <div class="discrimination">
+            <select name="Month">
+                {% for discrimination in discrimination %}
+                <option value="hr_1">{{ discrimination }}</option>
+                {% endfor %}
+            </select>
+        <br>
+        <label class="container">ADD ANOTHER CATEGORY
+            <input type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+        </label>
+        <div>
+          <h5> (Select a maximum of 3 categories total) </h5>
+        </div>
+        <div>
+          <button class="button1">BACK: COUNTRY & DATE</button>
+          <button class="button2">NEXT: FIND RESOURCES</button>
+       </div>
     </div>
+  </div>
+
 {% endblock %}
+

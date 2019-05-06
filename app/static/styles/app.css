@@ -1,25 +1,169 @@
 @media -sass-debug-info{filename{}line{font-family:\000037}}
 nav {
   margin-bottom: 40px !important;
+  background-color: #FFFFFF;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000312}}
-.ui.fixed.main.menu .right.menu > .item:last-of-type {
-  border-right: 1px solid rgba(34, 36, 38, 0.0980392);
+@media -sass-debug-info{filename{}line{font-family:\0000313}}
+.ui.fixed.main.menu {
+  background-color: #FFFFFF;
+  min-height: 4em;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000318}}
+.ui.fixed.main.menu .right.menu > .item {
+  background-color: #FFFFFF;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000324}}
 nav .mobile.only.row .ui.vertical.menu {
   margin-top: 40px;
   display: none;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000325}}
+@media -sass-debug-info{filename{}line{font-family:\0000332}}
 .flashes > .ui.message:last-of-type {
   margin-bottom: 2rem;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000330}}
+@media -sass-debug-info{filename{}line{font-family:\0000337}}
 table.selectable tr:hover {
   cursor: pointer !important;
 }
+
+@media -sass-debug-info{filename{}line{font-family:\0000344}}
+body {
+  font-family: Helvetica,sans-serif;
+  font-size: 14px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000350}}
+h1 {
+  font-weight: lighter;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000355}}
+.popup {
+  position: fixed;
+  left: 50%;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000360}}
+.popup .wrapper {
+  position: relative;
+  left: -50%;
+  /*popup-styles*/
+  background-color: #FFFFFF;
+  border-radius: 10px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000368}}
+.text {
+  text-align: center;
+  margin: 100px 0px;
+  padding: 40px 90px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000374}}
+.button1 {
+  display: inline;
+  background-color: #36568B;
+  color: white;
+  font-size: 10px;
+  height: 30px;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000385}}
+.button2 {
+  display: inline;
+  background-color: #36568B;
+  color: white;
+  font-size: 10px;
+  height: 30px;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000396}}
+.center-on-page {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003103}}
+h1 {
+  text-align: center;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003107}}
+.selectdiv:after {
+  content: '<>';
+  font: 17px "Consolas", monospace;
+  color: #333;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  right: 11px;
+  /*Adjust for position however you want*/
+  top: 18px;
+  padding: 0 0 2px;
+  border-bottom: 1px solid #999;
+  /*left line */
+  position: absolute;
+  pointer-events: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003127}}
+.violation {
+  display: inline;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003131}}
+select {
+  display: inline;
+  position: static;
+  width: 100%;
+  max-width: 120px;
+  padding: 0px 24px;
+  font-size: 13px;
+  line-height: 1.75;
+  margin-left: 40%;
+  color: #2E4459;
+  background-image: none;
+  border: 2px solid #2E4459;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003146}}
+.area select {
+  display: inline-block;
+  width: 90px;
+  margin: 5px 0px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003152}}
+.violation select {
+  display: inline;
+  position: static;
+  width: 100%;
+  max-width: 120px;
+  height: 30px;
+  padding: 0px 24px;
+  font-size: 13px;
+  line-height: 1.75;
+  margin-left: 0%;
+  color: #2E4459;
+  background-image: none;
+  border: 2px solid #2E4459;
+}
+
+/*.container {
+    .container input:checked ~ .checkmark:after {
+      display: block;
+}*/
