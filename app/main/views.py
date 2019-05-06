@@ -374,9 +374,11 @@ def testAddingF():
 def testAddingC():
     countries = db.session.query(Country).all()
     return str(countries)
-@main.route('/date/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>'country)
-def FilterTreatybyDate(date):
-    treatyids = db.session.query(TreatyToCountry).filter(TreatyToCountry.date>= date).with_entities(TreatyToCountry.tid)
-    for tid in treatyids:
-        treatylist.append(db.session.query(Treaty).filter_by(Treaty.id = tid)
-    return treaties
+
+# @main.route('/date/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>')
+# def FilterTreatybyDate(date):
+#     treatyids = db.session.query(TreatyToCountry).filter(TreatyToCountry.date >= date).with_entities(TreatyToCountry.tid)
+#     treatylist = []
+#     for tid in treatyids:
+#         treatylist.append(db.session.query(Treaty).filter_by(id = tid))
+#     return str(treatylist)
