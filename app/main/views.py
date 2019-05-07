@@ -4,6 +4,7 @@ from app.models import EditableHTML
 from .. import db
 from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results, Treaty
 from .forms import TreatySearchForm
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -379,10 +380,26 @@ def testAddingC():
     countries = db.session.query(Country).all()
     return str(countries)
 
-# @main.route('/date/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>')
-# def FilterTreatybyDate(date):
-#     treatyids = db.session.query(TreatyToCountry).filter(TreatyToCountry.date >= date).with_entities(TreatyToCountry.tid)
-#     treatylist = []
-#     for tid in treatyids:
-#         treatylist.append(db.session.query(Treaty).filter_by(id = tid))
-#     return str(treatylist)
+@main.route('/date/<date>')
+def FilterTreatybyDate(date):
+    input_date = datetime.strptime(date, "%m-%d-%Y").date()
+    treatyids = db.session.query(TreatyToCountry).filter(datetime.strptime(TreatyToCountry.date, "%m-%d-%Y").date() >= input_date).with_entities(TreatyToCountry.tid)
+    treatylist = []
+    for tid in treatyids:
+        treatylist.append(db.session.query(Treaty).filter_by(id = tid))
+    return str(treatylist)
+
+@main.route('/multiple/<string:cat>/<string:subcat>/<string:disc>/<string:forum>/<string:country>/<date>/')
+def FilterTreatybyMultiple(date, subcat, cat, disc, forum, country):
+    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all().with_entities(Right.id)
+    treatyIds = []
+    for right in rights:
+      treatyIds.extend(db.session.query(TreatyToRight).filter_by(rid=right).all())
+
+    country = db.session.query(Country).filter_by(name=country).first().with_entities(Country.id)
+    forum = db.session.query(Forum).filter_by(name=forum).first().with_entities(Forum.id)
+    input_date = datetime.strptime(date, "%m-%d-%Y").date()
+
+    return "hello"
+
+

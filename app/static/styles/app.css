@@ -1,40 +1,40 @@
-@media -sass-debug-info{filename{}line{font-family:\000037}}
+@media -sass-debug-info{filename{}line{font-family:\000031}}
+body {
+  font-family: Helvetica,sans-serif;
+  font-size: 14px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000313}}
 nav {
   margin-bottom: 40px !important;
   background-color: #FFFFFF;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000313}}
+@media -sass-debug-info{filename{}line{font-family:\0000319}}
 .ui.fixed.main.menu {
   background-color: #FFFFFF;
   min-height: 4em;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000318}}
+@media -sass-debug-info{filename{}line{font-family:\0000324}}
 .ui.fixed.main.menu .right.menu > .item {
   background-color: #FFFFFF;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000324}}
+@media -sass-debug-info{filename{}line{font-family:\0000330}}
 nav .mobile.only.row .ui.vertical.menu {
   margin-top: 40px;
   display: none;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000332}}
+@media -sass-debug-info{filename{}line{font-family:\0000338}}
 .flashes > .ui.message:last-of-type {
   margin-bottom: 2rem;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\0000337}}
+@media -sass-debug-info{filename{}line{font-family:\0000343}}
 table.selectable tr:hover {
   cursor: pointer !important;
-}
-
-@media -sass-debug-info{filename{}line{font-family:\0000344}}
-body {
-  font-family: Helvetica,sans-serif;
-  font-size: 14px;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\0000350}}
