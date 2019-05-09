@@ -83,15 +83,15 @@ def add_init_data(csv_file_name):
             treaty=row[7]
             forum=row[8]
             link=row[9]
-            rid = views.add_right(right, subcat, disc)
             fid = views.add_forum(forum)
+            rid = views.add_right(right, subcat, disc)
             cid = views.add_country(country)
             tid = views.add_treaty(treaty, link)
             views.add_ttof(fid, tid)
             views.add_ttoc(cid, tid, date)
             views.add_ttor(rid, tid)
             line_count += 1
-            if (line_count == 1): 
+            if (line_count == 100): 
                 break
         print('Processed {line_count} lines'.format(line_count=line_count))
 

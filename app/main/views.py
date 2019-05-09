@@ -18,14 +18,10 @@ def about():
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
 
-
 ## ADDING, MODIFYING, DELETING RECORDS
 
 @main.route('/add/right/<string:c>/<string:s>/<string:d>')
 def add_right(c, s, d):
-  print(c)
-  print(s)
-  print(d)
   result = Right.query.filter_by(cat=c, subcat=s, disc=d).with_entities(Right.id).first()
   if result is None:
     right = Right(cat=c, subcat=s, disc=d)
@@ -45,10 +41,8 @@ def add_ttof(fi, ti):
 
 @main.route('/add/forum/<string:n>')
 def add_forum(n):
-  print(n)
   result = Forum.query.filter_by(name=n).with_entities(Forum.id).first()
   if result is None:
-    print('went in here')
     forum = Forum(name=n)
     db.session.add(forum)
     db.session.commit()
@@ -66,8 +60,6 @@ def add_ttor(ri, ti):
 
 @main.route('/add/treaty/<string:n>/<string:u>')
 def add_treaty(n, u):
-  print(n)
-  print(u)
   result = Treaty.query.filter_by(name=n, url=u).with_entities(Treaty.id).first()
   if result is None:
     treaty = Treaty(name=n, url=u)
@@ -87,7 +79,6 @@ def add_ttoc(ci, ti, d):
 
 @main.route('/add/country/<string:n>')
 def add_country(n):
-  print(n)
   result = Country.query.filter_by(name=n).with_entities(Country.id).first()
   if result is None:
     country = Country(name= n)
@@ -346,6 +337,13 @@ def FilterBySubcategory(subcat):
         treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
     return treaties
 
+# @main.route('/date/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>'country)
+# def FilterTreatybyDate(date):
+#     treatyids = db.session.query(TreatyToCountry).filter(TreatyToCountry.date>= date).with_entities(TreatyToCountry.tid)
+#     for tid in treatyids:
+#         treatylist.append(db.session.query(Treaty).filter_by(Treaty.id = tid)
+#     return treaties
+
 ## TESTING ROUTES ## 
 
 @main.route('/testrights')
@@ -367,16 +365,15 @@ def testAddingT():
 
 @main.route('/testforums')
 def testAddingF():
-    forums = db.session.query(Forum).all()
+    forums = db.session.query(Forum).first().name
     return str(forums)
 
 @main.route('/testcountries')
 def testAddingC():
     countries = db.session.query(Country).all()
     return str(countries)
-@main.route('/date/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>'country)
-def FilterTreatybyDate(date):
-    treatyids = db.session.query(TreatyToCountry).filter(TreatyToCountry.date>= date).with_entities(TreatyToCountry.tid)
-    for tid in treatyids:
-        treatylist.append(db.session.query(Treaty).filter_by(Treaty.id = tid)
-    return treaties
+
+@main.route('/testttor')
+def testAddingTtor():
+    ttors = db.session.query(TreatyToRight).all()
+    return str(ttors)
