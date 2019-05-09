@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, session, jsonify, request, redirect, flash, url_for
+from sqlalchemy import or_
 
 from app.models import EditableHTML
 from .. import db
 from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results, Treaty
 from .forms import TreatySearchForm
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -17,6 +19,11 @@ def about():
     editable_html_obj = EditableHTML.get_editable_html('about')
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
+
+@main.route('/admin')
+def adminHome():
+    return render_template('layouts/admin_search.html')
+
 
 ## ADDING, MODIFYING, DELETING RECORDS
 
@@ -235,8 +242,6 @@ def startForm():
     discrimination = []
     for right in rights:
         categories.append(right.cat)
-        subcategories.append(right.subcat)
-        discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=categories,
     subcategories=subcategories, discrimination=discrimination)
     # return str(rights)
@@ -248,14 +253,13 @@ def showCategory(category):
     discrimination = []
     for right in rights:
         subcategories.append(right.subcat)
-        discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=[category],
     subcategories=subcategories, discrimination=discrimination)
     #return str(rights)
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
-    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory).all()
+    rights = db.session.query(Right).filter_by(cat=category).filter(or_(Right.subcat==subcategory, Right.subcat=="")).all()
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
@@ -265,7 +269,7 @@ def showSubcategory(category, subcategory):
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
-    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
+    rights = db.session.query(Right).filter_by(cat=category).filter(or_(Right.subcat==subcategory, Right.subcat=="")).filter(or_(Right.disc==discrimination, Right.disc=="")).all()
     return render_template('/layouts/index.html', categories=[category],
     subcategories=[subcategory], discrimination=[discrimination]);
     #return str(rights)
@@ -295,7 +299,7 @@ def search(results=None):
   form = TreatySearchForm(request.form)
   treaties = []
   if request.method == 'POST':
-    results = db.session.query(Treaty).filter_by(name=form.data['treatyName']).all()
+    results = db.session.query(Treaty).filter(Treaty.name.contains(form.data['treatyName'])).all()
     return render_template('/layouts/search.html', results = results, form=form)
 
   return render_template('/layouts/search.html', results = results, form=form)
@@ -377,3 +381,27 @@ def testAddingC():
 def testAddingTtor():
     ttors = db.session.query(TreatyToRight).all()
     return str(ttors)
+    
+@main.route('/date/<date>')
+def FilterTreatybyDate(date):
+    input_date = datetime.strptime(date, "%m-%d-%Y").date()
+    treatyids = db.session.query(TreatyToCountry).filter(datetime.strptime(TreatyToCountry.date, "%m-%d-%Y").date() >= input_date).with_entities(TreatyToCountry.tid)
+    treatylist = []
+    for tid in treatyids:
+        treatylist.append(db.session.query(Treaty).filter_by(id = tid))
+    return str(treatylist)
+
+@main.route('/multiple/<string:cat>/<string:subcat>/<string:disc>/<string:forum>/<string:country>/<date>/')
+def FilterTreatybyMultiple(date, subcat, cat, disc, forum, country):
+    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all().with_entities(Right.id)
+    treatyIds = []
+    for right in rights:
+      treatyIds.extend(db.session.query(TreatyToRight).filter_by(rid=right).all())
+
+    country = db.session.query(Country).filter_by(name=country).first().with_entities(Country.id)
+    forum = db.session.query(Forum).filter_by(name=forum).first().with_entities(Forum.id)
+    input_date = datetime.strptime(date, "%m-%d-%Y").date()
+
+    return "hello"
+
+
