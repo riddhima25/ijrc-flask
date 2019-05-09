@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, session, jsonify, request, redirect, flash, url_for
+from sqlalchemy import or_
 
 from app.models import EditableHTML
 from .. import db
@@ -224,8 +225,6 @@ def startForm():
     discrimination = []
     for right in rights:
         categories.append(right.cat)
-        subcategories.append(right.subcat)
-        discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=categories,
     subcategories=subcategories, discrimination=discrimination)
     # return str(rights)
@@ -237,14 +236,13 @@ def showCategory(category):
     discrimination = []
     for right in rights:
         subcategories.append(right.subcat)
-        discrimination.append(right.disc)
     return render_template('/layouts/index.html', categories=[category],
     subcategories=subcategories, discrimination=discrimination)
     #return str(rights)
 
 @main.route('/form/<category>/<subcategory>')
 def showSubcategory(category, subcategory):
-    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory).all()
+    rights = db.session.query(Right).filter_by(cat=category).filter(or_(Right.subcat==subcategory, Right.subcat=="")).all()
     discrimination = []
     for right in rights:
         discrimination.append(right.disc)
@@ -254,7 +252,7 @@ def showSubcategory(category, subcategory):
 
 @main.route('/form/<category>/<subcategory>/<discrimination>')
 def showDiscrimination(category, subcategory, discrimination):
-    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all()
+    rights = db.session.query(Right).filter_by(cat=category).filter(or_(Right.subcat==subcategory, Right.subcat=="")).filter(or_(Right.disc==discrimination, Right.disc=="")).all()
     return render_template('/layouts/index.html', categories=[category],
     subcategories=[subcategory], discrimination=[discrimination]);
     #return str(rights)
