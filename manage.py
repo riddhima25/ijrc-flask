@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import subprocess
+import csv
 
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell
@@ -9,6 +10,7 @@ from rq import Connection, Queue, Worker
 
 from app import create_app, db
 from app.models import Role, User
+from app.main import views
 from config import Config
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -43,7 +45,6 @@ def recreate_db():
     db.create_all()
     db.session.commit()
 
-
 @manager.option(
     '-n',
     '--number-users',
@@ -57,6 +58,42 @@ def add_fake_data(number_users):
     """
     User.generate_fake(count=number_users)
 
+@manager.option(
+    '-n', 
+    '--csv_file_name',
+    default="May2016law.csv",
+    type=str
+)
+def add_init_data(csv_file_name): 
+    """
+    Adds data from initial excel sheet to database. 
+    """
+    with open(csv_file_name) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        right = subcat = disc = comp_auth = rule = treaty = forum = link = date = ""
+        for row in csv_reader:
+            right=row[0]
+            subcat=row[1]
+            disc=row[2]
+            country=row[3]
+            date=row[4]
+            comp_auth=row[5]
+            rule=row[6]
+            treaty=row[7]
+            forum=row[8]
+            link=row[9]
+            rid = views.add_right(right, subcat, disc)
+            fid = views.add_forum(forum)
+            cid = views.add_country(country)
+            tid = views.add_treaty(treaty, link)
+            views.add_ttof(fid, tid)
+            views.add_ttoc(cid, tid, date)
+            views.add_ttor(rid, tid)
+            line_count += 1
+            if (line_count == 1): 
+                break
+        print('Processed {line_count} lines'.format(line_count=line_count))
 
 @manager.command
 def setup_dev():

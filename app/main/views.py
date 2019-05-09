@@ -5,6 +5,7 @@ from app.models import EditableHTML
 from .. import db
 from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results, Treaty
 from .forms import TreatySearchForm
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -19,32 +20,47 @@ def about():
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
 
+@main.route('/admin')
+def adminHome():
+    return render_template('layouts/admin_search.html')
+
 
 ## ADDING, MODIFYING, DELETING RECORDS
 
 @main.route('/add/right/<string:c>/<string:s>/<string:d>')
 def add_right(c, s, d):
-    if Right.query.filter_by(cat=c, subcat=s, disc=d).first() is None:
-      right = Right(cat=c, subcat=s, disc=d)
-      db.session.add(right)
-      db.session.commit()
-    return 'success'
+  print(c)
+  print(s)
+  print(d)
+  result = Right.query.filter_by(cat=c, subcat=s, disc=d).with_entities(Right.id).first()
+  if result is None:
+    right = Right(cat=c, subcat=s, disc=d)
+    db.session.add(right)
+    db.session.commit()
+    return Right.query.filter_by(cat=c, subcat=s, disc=d).with_entities(Right.id).first()[0]
+  else: 
+    return result[0]
 
 @main.route('/add/ttof/<int:fi>/<int:ti>')
 def add_ttof(fi, ti):
-    if TreatyToForum.query.filter_by(fid=fi, tid=ti).first() is None:
-      tttof = TreatyToForum(fid=fi, tid=ti)
-      db.session.add(ttof)
-      db.session.commit()
-    return 'success'
+  if TreatyToForum.query.filter_by(fid=fi, tid=ti).first() is None:
+    ttof = TreatyToForum(fid=fi, tid=ti)
+    db.session.add(ttof)
+    db.session.commit()
+  return 'success'
 
 @main.route('/add/forum/<string:n>')
 def add_forum(n):
-  if Forum.query.filter_by(name=n).first() is None:
+  print(n)
+  result = Forum.query.filter_by(name=n).with_entities(Forum.id).first()
+  if result is None:
+    print('went in here')
     forum = Forum(name=n)
     db.session.add(forum)
     db.session.commit()
-  return 'success'
+    return Forum.query.filter_by(name=n).with_entities(Forum.id).first()[0]
+  else:
+    return result[0]
 
 @main.route('/add/ttor/<int:ri>/<int:ti>')
 def add_ttor(ri, ti):
@@ -56,11 +72,16 @@ def add_ttor(ri, ti):
 
 @main.route('/add/treaty/<string:n>/<string:u>')
 def add_treaty(n, u):
-  if Treaty.query.filter_by(name=n, url=u) is None:
+  print(n)
+  print(u)
+  result = Treaty.query.filter_by(name=n, url=u).with_entities(Treaty.id).first()
+  if result is None:
     treaty = Treaty(name=n, url=u)
     db.session.add(treaty)
     db.session.commit()
-  return 'success'
+    return Treaty.query.filter_by(name=n, url=u).with_entities(Treaty.id).first()[0]
+  else:
+    return result[0]
 
 @main.route('/add/ttoc/<int:ci>/<int:ti>/<string:d>')
 def add_ttoc(ci, ti, d):
@@ -72,11 +93,15 @@ def add_ttoc(ci, ti, d):
 
 @main.route('/add/country/<string:n>')
 def add_country(n):
-  if Country.query.filter_by(name=n).first() is None:
+  print(n)
+  result = Country.query.filter_by(name=n).with_entities(Country.id).first()
+  if result is None:
     country = Country(name= n)
     db.session.add(country)
     db.session.commit()
-  return 'success'
+    return Country.query.filter_by(name=n).with_entities(Country.id).first()[0]
+  else:
+    return result[0]
 
 @main.route('/delete/rights/cat/<string:c>')
 def delete_rights_category(c):
@@ -282,10 +307,7 @@ def search(results=None):
   form = TreatySearchForm(request.form)
   treaties = []
   if request.method == 'POST':
-    #return (form.data['treatyName'])
-    results = db.session.query(Treaty).filter_by(name=form.data['treatyName']).all()
-    for result in results:
-      treaties.append(result)
+    results = db.session.query(Treaty).filter(Treaty.name.contains(form.data['treatyName'])).all()
     return render_template('/layouts/search.html', results = results, form=form)
 
   return render_template('/layouts/search.html', results = results, form=form)
@@ -326,4 +348,56 @@ def FilterBySubcategory(subcat):
     for entry in rights:
         treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
     return treaties
+
+## TESTING ROUTES ## 
+
+@main.route('/testrights')
+def testAddingR():
+    rights = db.session.query(Right).all()
+    categories = []
+    subcategories = []
+    discrimination = []
+    for right in rights:
+        categories.append(right.cat)
+        subcategories.append(right.subcat)
+        discrimination.append(right.disc)
+    return str(rights)
+
+@main.route('/testtreaties')
+def testAddingT():
+    treaties = db.session.query(Treaty).all()
+    return str(treaties)
+
+@main.route('/testforums')
+def testAddingF():
+    forums = db.session.query(Forum).all()
+    return str(forums)
+
+@main.route('/testcountries')
+def testAddingC():
+    countries = db.session.query(Country).all()
+    return str(countries)
+
+@main.route('/date/<date>')
+def FilterTreatybyDate(date):
+    input_date = datetime.strptime(date, "%m-%d-%Y").date()
+    treatyids = db.session.query(TreatyToCountry).filter(datetime.strptime(TreatyToCountry.date, "%m-%d-%Y").date() >= input_date).with_entities(TreatyToCountry.tid)
+    treatylist = []
+    for tid in treatyids:
+        treatylist.append(db.session.query(Treaty).filter_by(id = tid))
+    return str(treatylist)
+
+@main.route('/multiple/<string:cat>/<string:subcat>/<string:disc>/<string:forum>/<string:country>/<date>/')
+def FilterTreatybyMultiple(date, subcat, cat, disc, forum, country):
+    rights = db.session.query(Right).filter_by(cat=category, subcat=subcategory, disc=discrimination).all().with_entities(Right.id)
+    treatyIds = []
+    for right in rights:
+      treatyIds.extend(db.session.query(TreatyToRight).filter_by(rid=right).all())
+
+    country = db.session.query(Country).filter_by(name=country).first().with_entities(Country.id)
+    forum = db.session.query(Forum).filter_by(name=forum).first().with_entities(Forum.id)
+    input_date = datetime.strptime(date, "%m-%d-%Y").date()
+
+    return "hello"
+
 
