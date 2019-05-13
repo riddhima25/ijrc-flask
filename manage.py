@@ -61,7 +61,7 @@ def add_fake_data(number_users):
 @manager.option(
     '-n', 
     '--csv_file_name',
-    default="May2016law.csv",
+    default="ShortenedLaw.csv",
     type=str
 )
 def add_init_data(csv_file_name): 
@@ -91,8 +91,6 @@ def add_init_data(csv_file_name):
             views.add_ttoc(cid, tid, date)
             views.add_ttor(rid, tid)
             line_count += 1
-            if (line_count == 100): 
-                break
         print('Processed {line_count} lines'.format(line_count=line_count))
 
 @manager.command
