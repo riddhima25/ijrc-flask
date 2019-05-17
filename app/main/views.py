@@ -11,7 +11,20 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return render_template('main/index.html')
+    categories = []
+    subcategories = []
+    discriminations = []
+    results = db.session.query(Right).all()
+    for result in results:
+      if result.cat not in categories:
+        categories.append(result.cat)
+      if result.subcat not in subcategories:
+        subcategories.append(result.subcat)
+      if result.disc not in discriminations:
+        discriminations.append(result.disc)
+
+    return render_template('main/index.html', categories=categories, subcategories=subcategories,
+      discriminations=discriminations)
 
 
 @main.route('/about')
@@ -23,7 +36,6 @@ def about():
 @main.route('/admin')
 def adminHome():
     return render_template('layouts/admin_search.html')
-
 
 ## ADDING, MODIFYING, DELETING RECORDS
 

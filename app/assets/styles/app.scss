@@ -1,6 +1,7 @@
 body {
     font-family: Helvetica,sans-serif;
     font-size: 14px;
+    background-color: #2E4459;
     
 }
 
@@ -51,7 +52,6 @@ table.selectable tr:hover {
     font-weight: lighter;
   }
   
-  
   .popup {
     position:fixed;
     left:50%;
@@ -67,7 +67,6 @@ table.selectable tr:hover {
   
   .text {
     text-align: center;
-    margin: 100px 0px;
     padding: 40px 90px
   }
   

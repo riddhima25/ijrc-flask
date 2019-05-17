@@ -4,11 +4,10 @@
 
   <div class="popup">
     <div class="wrapper">
-      <div class = "text">
+      <div class = "text ">
 
         <div class="violation">
           <p>I believe the violation I faced is under the category: </p>
-
           <select name="violation">
               {% for category in categories %}
               <option value="hr_1">{{ category }}</option>
@@ -28,7 +27,7 @@
         </div>
         <div class="discrimination">
             <select name="Month">
-                {% for discrimination in discrimination %}
+                {% for discrimination in discriminations %}
                 <option value="hr_1">{{ discrimination }}</option>
                 {% endfor %}
             </select>
