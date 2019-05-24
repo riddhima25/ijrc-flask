@@ -18,7 +18,7 @@
   <div class="popup">
     <div class="wrapper">
       <div class = "text">
-
+        <form action= onSubmit()>
         <div class="violation">
           <p>I believe the violation I faced is under the category: </p>
 
@@ -45,7 +45,8 @@
                 <option value="hr_1">{{ discrimination }}</option>
                 {% endfor %}
             </select>
-        <br>
+        </div>>
+        </form>
         <label class="container">ADD ANOTHER CATEGORY
             <input type="checkbox" checked="checked">
             <span class="checkmark"></span>
@@ -54,11 +55,38 @@
           <h5> (Select a maximum of 3 categories total) </h5>
         </div>
         <div>
-          <button class="button1">BACK: COUNTRY & DATE</button>
-          <button class="button2">NEXT: FIND RESOURCES</button>
+          <button type="submit" class="button2">NEXT: FIND RESOURCES</button>
        </div>
     </div>
   </div>
 
 {% endblock %}
+</div>
+</body>
+<script>
+  function onSubmit() {
+    var init = {
+      "month": document.getElementById("Month").value,
+      "day": document.getElementById("Day").value,
+      "year": document.getElementById("Year").value,
+      "country": document.getElementById("country").value,
+      "category": document.getElementById("category").value,
+      "subcategory": document.getElementById("subcategory").value,
+      "discrimination": document.getElementById("discrimination").value}
+    $.ajax({
+      type: "POST",
+      url: "/results",
+      data: JSON.stringify(init),
+      success: function(response){
+          if (response.redirect) {
+            window.location.href = response.redirect;
+          }
+        },
+        dataType: "json",
+        contentType : "application/json"
+      });
+    }
+  </script>
+
+</html>
 

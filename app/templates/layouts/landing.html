@@ -20,7 +20,7 @@
       <div class = "text">
         <h1>Forum Selector</h1>
         <hr/>
-
+        <form action = dateSubmit()>
         <p>I want to know where I can report a violation of my human rights that took place in country</p>
 
         <select name="country">
@@ -47,10 +47,36 @@
               {% endfor %}
           </select>
         </div>
-        <button>NEXT: CATEGORY OF VIOLATION</button>
+        </form>
+        <button type="submit">NEXT: CATEGORY OF VIOLATION</button>
        </div>
     </div>
   </div>
 
 </body>
+<script>
+  function dateSubmit() {
+    var init = {
+      "month": document.getElementById("Month").value,
+      "day": document.getElementById("Day").value,
+      "year": document.getElementById("Year").value,
+      "country": document.getElementById("country").value,
+      "category": "",
+      "subcategory": "",
+      "discrimination": ""}
+    $.ajax({
+      type: "POST",
+      url: "/index",
+      data: JSON.stringify(init),
+      success: function(response){
+          if (response.redirect) {
+            window.location.href = response.redirect;
+          }
+        },
+        dataType: "json",
+        contentType : "application/json"
+      });
+    }
+  </script>
+
 </html>
