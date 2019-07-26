@@ -2,49 +2,53 @@
 
 {% block content %}
 
-  <div class="popup">
-    <div class="wrapper">
-      <div class = "text ">
-
-        <div class="violation">
-          <p>I believe the violation I faced is under the category: </p>
-          <select name="violation">
-              {% for category in categories %}
-              <option value="hr_1">{{ category }}</option>
-              {% endfor %}
-          </select>
-
-          <p>Specifically within the area of: </p>
-        </div>
-
-        <div class="area">
-          <select name="Month">
-              {% for subcategory in subcategories %}
-              <option value="hr_1">{{ subcategory }}</option>
-              {% endfor %}
-          </select>
-        <p>On the basis of: </p>
-        </div>
-        <div class="discrimination">
-            <select name="Month">
-                {% for discrimination in discriminations %}
-                <option value="hr_1">{{ discrimination }}</option>
-                {% endfor %}
-            </select>
-        <br>
-        <label class="container">ADD ANOTHER CATEGORY
-            <input type="checkbox" checked="checked">
-            <span class="checkmark"></span>
-        </label>
-        <div>
-          <h5> (Select a maximum of 3 categories total) </h5>
-        </div>
-        <div>
-          <button class="button1">BACK: COUNTRY & DATE</button>
-          <button class="button2">NEXT: FIND RESOURCES</button>
-       </div>
+<div class="home-container">
+  <div class="card home-card">
+    <div class="card-content">
+    <div class="violation">
+      <p>I believe the violation I faced is under the category: </p>
+      <select name="violation">
+          {% for category in categories %}
+          <option value="hr_1">{{ category }}</option>
+          {% endfor %}
+      </select>
+    </div>
+    <div>
+      <p>Specifically within the area of: </p>
+      <div class="area">
+        <select name="Month">
+            {% for subcategory in subcategories %}
+            <option value="hr_1">{{ subcategory }}</option>
+            {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div>
+      <p>On the basis of: </p>
+      <div class="discrimination">
+        <select name="Month">
+            {% for discrimination in discriminations %}
+            <option value="hr_1">{{ discrimination }}</option>
+            {% endfor %}
+        </select>
+      </div>
+    </div>
+    <br>
+      <label class="container">ADD ANOTHER CATEGORY
+          <input type="checkbox" checked="checked">
+          <span class="checkmark"></span>
+      </label>
+      <div>
+        <h5> (Select a maximum of 3 categories total) </h5>
+      </div>
+      <div>
+        <button class="button1">BACK: COUNTRY & DATE</button>
+        <button class="button2">NEXT: FIND RESOURCES</button>
+      </div>
     </div>
   </div>
+</div>
+
 
 {% endblock %}
 

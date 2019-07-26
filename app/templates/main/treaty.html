@@ -1,0 +1,132 @@
+{% import 'macros/page_macros.html' as page %}
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		{% if treaty %}
+		<div class="col-md-12 treaty-card">
+			<h2>{ treaty.name }</h2>
+			<p>{ treaty.url }</p>
+		</div>
+		{% endif %}
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 treaty-table">
+			<table>
+
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<rect id = "main_rect"></rect>
+<rect id = "table_rect"></rect>
+<rect id = "middle_rect">	
+	<p id = "title">African Charter on Human and Peoples' Rights</p>
+	<p id = "subtitle">FORUM/GOVERNING BODY: African Court on Human and Peoples' Rights</p>
+	<p id = "subtitle">RULES FOR NEW PARTIES: upon deposit</p>
+	<p id = "subtitle">COMPLAINT AUTHORIZATION: Art. 5(3) declaration Protocol to the African Charter on Human and Peoples' Rights on the Establishment of the African Court on Human and Peoples' Rights</p>
+	<p id = "subtitle">LINK: http://www.ijrcenter.org/european-committee-of-social-rights/</p>
+</rect>
+<rect id = "table_header"></rect>
+<table id = "table1">
+	<tr>
+		<td id = "left" class = "header">
+			<p>COUNTRIES</p>
+		</td>
+		<td id = "middle" class = "header">
+			<p>RIGHTS PROTECTED</p>
+		</td>
+		<td id = "right" class = "header">
+			<p>APPL. AFTER</p>
+		</td>
+	</tr>
+	<tr>
+		<td id = "left">
+		</td>
+		<td id = "middle">
+		</td>
+		<td id = "right">
+		</td>
+	</tr>
+	<tr>
+		<td id = "left">
+			<p>Burkina Faso</p>
+		</td>
+		<td id = "middle">
+			<p>Self-determination of peoples</p>
+			<p>Equal Protection and Non-discrimination</p>
+			<p>Life</p>
+			<p>Equal Protection and Non-discrimination</p>
+		</td>
+		<td id = "right">
+			<p>1/25/2004</p>
+			<p>2/18/2000</p>
+			<p>1/25/2004</p>
+			<p>2/18/2000</p>
+		</td>
+	</tr>
+	<tr>
+		<td id = "left">
+			<p>Cote D'lvoire</p>
+		</td>
+		<td id = "middle">
+			<p>Education</p>
+			<p>Liberty</p>
+		</td>
+		<td id = "right">
+			<p>1/25/2004</p>
+			<p>2/18/2000</p>
+		</td>
+	</tr>
+	<tr>
+		<td id = "left">
+			<p>Ghana</p>
+		</td>
+		<td id = "middle">
+			<p>Self-determination of peoples</p>
+			<p>Equal Protection and Non-discrimination</p>
+			<p>Life</p>
+			<p>Equal Protection and Non-discrimination</p>
+		</td>
+		<td id = "right">
+			<p>1/25/2004</p>
+			<p>2/18/2000</p>
+			<p>1/25/2004</p>
+			<p>2/18/2000</p>
+		</td>
+	</tr>
+	<tr>
+		<td id = "left">
+			<p>Malawi</p>
+		</td>
+		<td id = "middle">
+			<p>Education</p>
+			<p>Liberty</p>
+		</td>
+		<td id = "right">
+			<p>1/25/2004</p>
+			<p>2/18/2000</p>
+		</td>
+	</tr>
+	<tr>
+		<td id = "left">
+			<p>Mali</p>
+		</td>
+		<td id = "middle">
+			<p>Education</p>
+			<p>Liberty</p>
+		</td>
+		<td id = "right">
+			<p>1/25/2004</p>
+			<p>2/18/2000</p>
+		</td>
+	</tr>
+</table>
+
+
+{% endblock %}
+

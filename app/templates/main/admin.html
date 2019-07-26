@@ -1,0 +1,129 @@
+{% import 'macros/page_macros.html' as page %}
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<div class="container admin-container">
+  <div class="row">
+    <div class="search col-md-12">
+      {% from "macros/_formhelpers.html" import render_field %}
+      <form method=post class="search-bar">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" placeholder="Search by Treaty"/>
+        <dl>
+          {{ render_field(form.treatyName) }}
+        </dl>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="admin-left col-md-3">
+      <button class="btn admin-treaty-button">Add New Treaty</button>
+      <div class="search-filters">
+        <div class = "filter">
+          <h6>Category</h6>
+          <select name="category filter-dropdown">
+              {% for category in categories %}
+              <option value="hr_1">{{ category }}</option>
+              {% endfor %}
+          </select>
+        </div>
+        <hr>
+        <div class = "filter">
+          <h6>Subcategory</h6>
+          <select name="subcategory filter-dropdown">
+              {% for subcategory in subcategories %}
+              <option value="hr_1">{{ subcategory }}</option>
+              {% endfor %}
+          </select>
+        </div>
+        <hr>
+        <div class = "filter">
+          <h6>Country</h6>
+          <select name="category">
+              <option value="hr_1">Country</option>
+              <option value="hr_2">Rigths</option>
+              <option value="hr_3">Violation</option>
+          </select>
+        </div>
+        <hr>
+        <div class = "filter">
+          <h6>Discrimnation Bases</h6>
+          <select name="category">
+              {% for discrimination in discriminations %}
+              <option value="hr_1">{{ discrimination }}</option>
+              {% endfor %}
+          </select>
+        </div>
+        <hr>
+        <div class = "filter">
+          <h6>Governing Body</h6>
+          <select name="category">
+              <option value="hr_1">Country</option>
+              <option value="hr_2">Rigths</option>
+              <option value="hr_3">Violation</option>
+          </select>
+        </div>
+        <hr>
+        <div class = "category">
+          <button>APPLY FILTER</button>
+        </div>
+      </div>
+    </div>
+
+    <div class = "admin-right col-md-9">
+      <div class="search-results">
+        <rect class="search-results-header row">
+          <div class="col-md-9">Treaty Name</div>
+          <div class="col-md-3">Date Modified</div>
+        </rect>
+        {% if results %}
+          {% for result in results %}
+            <button class="search-accordion">
+              <div class="row">
+                <div class="col-md-9">{{ result.id }}</div>
+                <div class="col-md-3">{{ result.tid }}</div>
+              </div>      
+            </button>
+            <div class="treaty-panel">
+              <strong>Countries Protected</strong>
+              <p>USA, Canada, Philippines... Make dynamic</p>
+              <strong>Associated Categories</strong>
+              <p>Education, Workforce... Make dynamic</p>
+              <a href="/treaty"><button class="more-info-button">See More Information</button></a>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+var acc = document.getElementsByClassName("search-accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    /* Toggle between adding and removing the "active" class,
+    to highlight the button that controls the panel */
+    this.classList.toggle("active");
+
+    /* Toggle between hiding and showing the active panel */
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+</script>
+
+
+{% endblock %}
+
+

@@ -33,12 +33,51 @@ def about():
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
 
-@main.route('/admin')
-def adminHome():
-    return render_template('layouts/admin_search.html')
+@main.route('/admin', methods=['GET', 'POST'])
+def admin(results=None):
+  form = TreatySearchForm(request.form)
+
+  categories = []
+  subcategories = []
+  discriminations = []
+  initialResults = db.session.query(Right).all()
+  for result in initialResults:
+    if result.cat not in categories:
+      categories.append(result.cat)
+    if result.subcat not in subcategories:
+      subcategories.append(result.subcat)
+    if result.disc not in discriminations:
+      discriminations.append(result.disc)
+
+  if request.method == 'POST':
+
+    treatyResult = db.session.query(Treaty).filter(Treaty.name.contains(form.data['treatyName'])).first()
+    results = db.session.query(TreatyToRight).filter_by(tid=treatyResult.id).all()
+
+    return render_template('/main/admin.html', results = results, form=form, categories=categories, subcategories=subcategories,
+    discriminations=discriminations)
+
+  return render_template('main/admin.html', results = results, form = form, categories=categories, subcategories=subcategories,
+    discriminations=discriminations)
+
+
+## SEARCH -- test functionality
+@main.route('/search', methods=['GET', 'POST'])
+def search(results=None):
+  form = TreatySearchForm(request.form)
+  if request.method == 'POST':
+    results = db.session.query(Treaty).filter(Treaty.name.contains(form.data['treatyName'])).all()
+    return render_template('/layouts/search.html', results = results, form=form)
+
+  return render_template('/layouts/search.html', results = results, form=form)
+
+## TREATY -- test functionality
+@main.route('/treaty')
+def editPage():
+  return render_template('/main/treaty.html')
+
 
 ## ADDING, MODIFYING, DELETING RECORDS
-
 @main.route('/add/right/<string:c>/<string:s>/<string:d>')
 def add_right(c, s, d):
   result = Right.query.filter_by(cat=c, subcat=s, disc=d).with_entities(Right.id).first()
@@ -305,16 +344,6 @@ def showResults():
     db.session.commit();
     return jsonify(dict(redirect=url_for('layouts.index')))
 
-## SEARCH
-@main.route('/search', methods=['GET', 'POST'])
-def search(results=None):
-  form = TreatySearchForm(request.form)
-  treaties = []
-  if request.method == 'POST':
-    results = db.session.query(Treaty).filter(Treaty.name.contains(form.data['treatyName'])).all()
-    return render_template('/layouts/search.html', results = results, form=form)
-
-  return render_template('/layouts/search.html', results = results, form=form)
 
 ## ADMIN FILTERING
 @main.route('/country/<string:country>')
