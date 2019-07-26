@@ -319,38 +319,42 @@ def search(results=None):
 ## ADMIN FILTERING
 @main.route('/country/<string:country>')
 def FilterTreatyByCountry(country):
-    country = db.session.query(Country).filter_by(name=country).first()
-    ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
-    treaties =[]
-    for entry in ttoc:
-        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    # country = db.session.query(Country).filter_by(name=country).first()
+    # ttoc = db.session.query(TreatyToCountry).filter_by(cid=country.id).all()
+    # treaties =[]
+    # for entry in ttoc:
+    #     treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    treaties = db.session.query(Treaty).join(Country, Treaty.cid == Country.id).filter(Country.name == country)
     return treaties
 
 @main.route('/forum/<string:forum>')
 def FilterTreatyByForum(forum):
-    forum = db.session.query(Forum).filter_by(name=forum).first()
-    ttof = db.session.query(TreatyToForum).filter_by(fid=forum.id).all()
-    treaties = []
-    for entry in ttof:
-        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    # forum = db.session.query(Forum).filter_by(name=forum).first()
+    # ttof = db.session.query(TreatyToForum).filter_by(fid=forum.id).all()
+    # treaties = []
+    # for entry in ttof:
+    #     treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    treaties = db.session.query(Treaty).join(Forum, Treaty.fid == Forum.id).filter(Forum.name == forum)
     return treaties
 
 @main.route('/discrimination/<string:discrimination>')
 def FilterByDiscrimination(discrimination):
-    right = db.session.query(Right).filter_by(disc=discrimination).first()
-    rightsids = db.session.query(TreatyToRight).filter_by(rid=rights.id).all()
-    treaties = []
-    for entry in rightsids:
-        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    # right = db.session.query(Right).filter_by(disc=discrimination).first()
+    # rightsids = db.session.query(TreatyToRight).filter_by(rid=rights.id).all()
+    # treaties = []
+    # for entry in rightsids:
+    #     treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    treaties = db.session.query(Treaty).join(TreatyToRight, Treaty.id == TreatyToRight.tid).join(Right).filter(TreatyToRight.rid == Right.id, Right.disc == discrimination)
     return treaties
 
 @main.route('/subcategory/<string:subcat>')
 def FilterBySubcategory(subcat):
-    right = db.session.query(Right).filter_by(subcat=subcat).first()
-    rights = db.session.query(TreatyToRight).filter_by(rid=right.id).all()
-    treaties = []
-    for entry in rights:
-        treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    # right = db.session.query(Right).filter_by(subcat=subcat).first()
+    # rights = db.session.query(TreatyToRight).filter_by(rid=right.id).all()
+    # treaties = []
+    # for entry in rights:
+    #     treaties.append(db.session.query(Treaty).filter_by(id=entry.tid).first())
+    treaties = db.session.query(Treaty).join(TreatyToRight, Treaty.id == TreatyToRight.tid).join(Right).filter(TreatyToRight.rid == Right.id, Right.subcat == subcat)
     return treaties
 
 # @main.route('/date/<datetime:date>/<string:subcategory>/<string:category>/<string:discrimination>/<string:forum>'country)
