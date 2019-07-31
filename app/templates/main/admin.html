@@ -40,12 +40,12 @@
         </div>
         <hr>
         <div class = "filter">
-          <h6>Country</h6>
-          <select name="category">
-              <option value="hr_1">Country</option>
-              <option value="hr_2">Rigths</option>
-              <option value="hr_3">Violation</option>
-          </select>
+            <h6>Country</h6>
+            <select name="category">
+                {% for country in countries %}
+                <option value="hr_1">{{ country }}</option>
+                {% endfor %}
+            </select>
         </div>
         <hr>
         <div class = "filter">
@@ -58,12 +58,12 @@
         </div>
         <hr>
         <div class = "filter">
-          <h6>Governing Body</h6>
-          <select name="category">
-              <option value="hr_1">Country</option>
-              <option value="hr_2">Rigths</option>
-              <option value="hr_3">Violation</option>
-          </select>
+          <form method=post>
+              <dl>
+                {{ render_field(form.forum) }}
+              </dl>
+              <input type="submit" name="csrf_token" value="{{ csrf_token() }}" action="/admin/">
+            </form>
         </div>
         <hr>
         <div class = "category">
@@ -82,8 +82,9 @@
           {% for result in results %}
             <button class="search-accordion">
               <div class="row">
-                <div class="col-md-9">{{ result.id }}</div>
-                <div class="col-md-3">{{ result.tid }}</div>
+                <div class="col-md-10">{{ result.name }}</div>
+                <div class="col-md-1">{{ result.ForumName }}</div>
+                <div class="col-md-1">{{ result.date }}</div>
               </div>      
             </button>
             <div class="treaty-panel">

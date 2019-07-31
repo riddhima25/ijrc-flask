@@ -26,38 +26,59 @@ def index():
     return render_template('main/index.html', categories=categories, subcategories=subcategories,
       discriminations=discriminations)
 
-
 @main.route('/about')
 def about():
     editable_html_obj = EditableHTML.get_editable_html('about')
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
 
-@main.route('/admin', methods=['GET', 'POST'])
-def admin(results=None):
-  form = TreatySearchForm(request.form)
+
+@main.route('/admin/<string:forum>', methods=['GET', 'POST'])
+def admin(forum, results=None):
+  search = TreatySearchForm(request.form)
+  results = []
 
   categories = []
   subcategories = []
   discriminations = []
-  initialResults = db.session.query(Right).all()
-  for result in initialResults:
-    if result.cat not in categories:
-      categories.append(result.cat)
-    if result.subcat not in subcategories:
-      subcategories.append(result.subcat)
-    if result.disc not in discriminations:
-      discriminations.append(result.disc)
+
+  for right in db.session.query(Right).all():
+    if right.cat not in categories:
+      categories.append(right.cat)
+    if right.subcat not in subcategories:
+      subcategories.append(right.subcat)
+    if right.disc not in discriminations:
+      discriminations.append(right.disc)
+  
+  forum_options = [(forum.name, forum.name) for forum in db.session.query(Forum).all()]
+  search.forum.choices = forum_options
 
   if request.method == 'POST':
+    treatiesToSearch = db.session.query(Treaty).filter(Treaty.name.contains(search.data['treatyName'])).all()
 
-    treatyResult = db.session.query(Treaty).filter(Treaty.name.contains(form.data['treatyName'])).first()
-    results = db.session.query(TreatyToRight).filter_by(tid=treatyResult.id).all()
-
-    return render_template('/main/admin.html', results = results, form=form, categories=categories, subcategories=subcategories,
+    for treaty in treatiesToSearch:    
+      if search.forum.data:
+        results = results + Treaty.query.filter_by(id=treaty.id).join(
+          TreatyToForum, Treaty.id == TreatyToForum.tid).add_columns(
+            Treaty.name, TreatyToForum.tid, TreatyToForum.fid).join(
+              Forum, Forum.id == TreatyToForum.fid).add_columns(
+                Forum.name.label('ForumName'), Treaty.name).filter(
+                  Forum.name == forum).all()
+      else:
+        results = db.session.query(Treaty).filter(Treaty.name.contains(search.data['treatyName'])).all()
+    return render_template('/main/admin.html', results=results, form=search, categories=categories, subcategories=subcategories,
     discriminations=discriminations)
 
-  return render_template('main/admin.html', results = results, form = form, categories=categories, subcategories=subcategories,
+    # if form.data['forum']:      
+    #   results = db.session.query(Treaty).join(TreatyToForum).join(Forum).filter(Treaty.name.contains(form.data['treatyName'])).all()
+    
+    # results = db.session.query(Treaty, TreatyToCountry, Country).filter(Treaty.name.contains(form.data['treatyName'])).filter(Treaty.id == TreatyToCountry.tid).filter(Country, Country.id == TreatyToCountry.cid).all()
+    
+    # results = db.session.query(TreatyToRight).filter_by(tid=treatyResult.id).all()
+
+    
+
+  return render_template('main/admin.html', results = results, form = search, categories=categories, subcategories=subcategories,
     discriminations=discriminations)
 
 
