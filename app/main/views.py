@@ -40,8 +40,8 @@ def search(results=None):
   # The default result query below does not return any values
   #defaultResults = db.session.query(TreatyToCountry).join(Treaty, Treaty.id == TreatyToCountry.tid).add_columns(Treaty.name, TreatyToCountry.id).join(Country, Country.id==TreatyToCountry.cid).add_columns(Forum.name.label("Forum"))# Initially, display all results
 
-  forums = [(forum.name, forum.name) for forum in Forum.query.all()]
-  search.forum.choices = forums
+  #forums = [(forum.name, forum.name) for forum in Forum.query.all()]
+  #search.forum.choices = forums
 
   categories = []
   subcategories = []
@@ -57,8 +57,8 @@ def search(results=None):
 
   if request.method == 'POST':
     query = defaultQuery.filter(Treaty.name.contains(search.data['treatyName']))
-    if search.data['forum']:
-       query = query.filter(Forum.name == search.data['forum'])
+    #if search.data['forum']:
+       #query = query.filter(Forum.name == search.data['forum'])
     results = query.all()
     return render_template('/main/admin.html', results=results, form=search, categories=categories, subcategories=subcategories,
     discriminations=discriminations)

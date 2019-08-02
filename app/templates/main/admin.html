@@ -22,12 +22,7 @@
       <button class="btn admin-treaty-button">Add New Treaty</button>
       <div class="search-filters">
         <div class = "filter">
-            <form method="POST" action="/">
-              <input type="submit" value="Go" type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <dl>
-                  {{ render_field(form.forum) }}
-              </dl>
-          </form>
+            
         </div>
         <div class = "filter">
           <h6>Category</h6>
