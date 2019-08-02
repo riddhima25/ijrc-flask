@@ -22,6 +22,14 @@
       <button class="btn admin-treaty-button">Add New Treaty</button>
       <div class="search-filters">
         <div class = "filter">
+            <form method="POST" action="/">
+              <input type="submit" value="Go" type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <dl>
+                  {{ render_field(form.forum) }}
+              </dl>
+          </form>
+        </div>
+        <div class = "filter">
           <h6>Category</h6>
           <select name="category filter-dropdown">
               {% for category in categories %}
@@ -40,12 +48,12 @@
         </div>
         <hr>
         <div class = "filter">
-            <h6>Country</h6>
-            <select name="category">
-                {% for country in countries %}
-                <option value="hr_1">{{ country }}</option>
-                {% endfor %}
-            </select>
+          <h6>Country</h6>
+          <select name="category">
+              <option value="hr_1">Country</option>
+              <option value="hr_2">Rigths</option>
+              <option value="hr_3">Violation</option>
+          </select>
         </div>
         <hr>
         <div class = "filter">
@@ -58,12 +66,12 @@
         </div>
         <hr>
         <div class = "filter">
-          <form method=post>
-              <dl>
-                {{ render_field(form.forum) }}
-              </dl>
-              <input type="submit" name="csrf_token" value="{{ csrf_token() }}" action="/admin/">
-            </form>
+          <h6>Governing Body</h6>
+          <select name="category">
+              <option value="hr_1">Country</option>
+              <option value="hr_2">Rigths</option>
+              <option value="hr_3">Violation</option>
+          </select>
         </div>
         <hr>
         <div class = "category">
@@ -82,9 +90,10 @@
           {% for result in results %}
             <button class="search-accordion">
               <div class="row">
-                <div class="col-md-10">{{ result.name }}</div>
-                <div class="col-md-1">{{ result.ForumName }}</div>
-                <div class="col-md-1">{{ result.date }}</div>
+                <div class="col-md-4">{{ result.id }}</div>
+                <div class="col-md-4">{{ result.name }}</div>
+                <div class="col-md-4">{{ result.Forum }}</div>
+
               </div>      
             </button>
             <div class="treaty-panel">
@@ -106,13 +115,11 @@
 <script>
 var acc = document.getElementsByClassName("search-accordion");
 var i;
-
 for (i = 0; i < acc.length; i++) {
   acc[i].addEventListener("click", function() {
     /* Toggle between adding and removing the "active" class,
     to highlight the button that controls the panel */
     this.classList.toggle("active");
-
     /* Toggle between hiding and showing the active panel */
     var panel = this.nextElementSibling;
     if (panel.style.display === "block") {
@@ -126,5 +133,3 @@ for (i = 0; i < acc.length; i++) {
 
 
 {% endblock %}
-
-

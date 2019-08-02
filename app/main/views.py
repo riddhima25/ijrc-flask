@@ -32,11 +32,16 @@ def about():
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
 
-
-@main.route('/admin/<string:forum>', methods=['GET', 'POST'])
-def admin(forum, results=None):
+@main.route('/search', methods=['GET', 'POST'])
+def search(results=None):
   search = TreatySearchForm(request.form)
   results = []
+  defaultQuery = db.session.query(TreatyToForum).join(Treaty, Treaty.id == TreatyToForum.tid).add_columns(Treaty.name, TreatyToForum.id).join(Forum, Forum.id==TreatyToForum.fid).add_columns(Forum.name.label("Forum"))# Initially, display all results
+  # The default result query below does not return any values
+  #defaultResults = db.session.query(TreatyToCountry).join(Treaty, Treaty.id == TreatyToCountry.tid).add_columns(Treaty.name, TreatyToCountry.id).join(Country, Country.id==TreatyToCountry.cid).add_columns(Forum.name.label("Forum"))# Initially, display all results
+
+  forums = [(forum.name, forum.name) for forum in Forum.query.all()]
+  search.forum.choices = forums
 
   categories = []
   subcategories = []
@@ -49,48 +54,20 @@ def admin(forum, results=None):
       subcategories.append(right.subcat)
     if right.disc not in discriminations:
       discriminations.append(right.disc)
-  
-  forum_options = [(forum.name, forum.name) for forum in db.session.query(Forum).all()]
-  search.forum.choices = forum_options
 
   if request.method == 'POST':
-    treatiesToSearch = db.session.query(Treaty).filter(Treaty.name.contains(search.data['treatyName'])).all()
-
-    for treaty in treatiesToSearch:    
-      if search.forum.data:
-        results = results + Treaty.query.filter_by(id=treaty.id).join(
-          TreatyToForum, Treaty.id == TreatyToForum.tid).add_columns(
-            Treaty.name, TreatyToForum.tid, TreatyToForum.fid).join(
-              Forum, Forum.id == TreatyToForum.fid).add_columns(
-                Forum.name.label('ForumName'), Treaty.name).filter(
-                  Forum.name == forum).all()
-      else:
-        results = db.session.query(Treaty).filter(Treaty.name.contains(search.data['treatyName'])).all()
+    query = defaultQuery.filter(Treaty.name.contains(search.data['treatyName']))
+    if search.data['forum']:
+       query = query.filter(Forum.name == search.data['forum'])
+    results = query.all()
     return render_template('/main/admin.html', results=results, form=search, categories=categories, subcategories=subcategories,
     discriminations=discriminations)
-
-    # if form.data['forum']:      
-    #   results = db.session.query(Treaty).join(TreatyToForum).join(Forum).filter(Treaty.name.contains(form.data['treatyName'])).all()
+  
+  
     
-    # results = db.session.query(Treaty, TreatyToCountry, Country).filter(Treaty.name.contains(form.data['treatyName'])).filter(Treaty.id == TreatyToCountry.tid).filter(Country, Country.id == TreatyToCountry.cid).all()
-    
-    # results = db.session.query(TreatyToRight).filter_by(tid=treatyResult.id).all()
-
-    
-
   return render_template('main/admin.html', results = results, form = search, categories=categories, subcategories=subcategories,
     discriminations=discriminations)
 
-
-## SEARCH -- test functionality
-@main.route('/search', methods=['GET', 'POST'])
-def search(results=None):
-  form = TreatySearchForm(request.form)
-  if request.method == 'POST':
-    results = db.session.query(Treaty).filter(Treaty.name.contains(form.data['treatyName'])).all()
-    return render_template('/layouts/search.html', results = results, form=form)
-
-  return render_template('/layouts/search.html', results = results, form=form)
 
 ## TREATY -- test functionality
 @main.route('/treaty')

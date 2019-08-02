@@ -240,14 +240,10 @@ input#treatyName {
   background-color: #588EBE;
   color: #FFFFFF;
   min-height: 1em;
+  width: auto;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003235}}
-.search-results-header div {
-  padding: 0px;
-}
-
-@media -sass-debug-info{filename{}line{font-family:\00003239}}
+@media -sass-debug-info{filename{}line{font-family:\00003236}}
 .search-accordion {
   background-color: #eee;
   color: #444;
@@ -261,13 +257,13 @@ input#treatyName {
 }
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-@media -sass-debug-info{filename{}line{font-family:\00003252}}
+@media -sass-debug-info{filename{}line{font-family:\00003249}}
 .active, .search-accordion:hover {
   background-color: #ccc;
 }
 
 /* Style the accordion panel. Note: hidden by default */
-@media -sass-debug-info{filename{}line{font-family:\00003257}}
+@media -sass-debug-info{filename{}line{font-family:\00003254}}
 .treaty-panel {
   padding: 1.2em 1em;
   background-color: white;
@@ -275,13 +271,13 @@ input#treatyName {
   overflow: hidden;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003264}}
+@media -sass-debug-info{filename{}line{font-family:\00003261}}
 .more-info-button {
   background-color: #2C429D;
   color: #FFFFFF;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003272}}
+@media -sass-debug-info{filename{}line{font-family:\00003269}}
 #header_rect {
   background: white;
   position: absolute;
@@ -291,7 +287,7 @@ input#treatyName {
   bottom: 92%;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003282}}
+@media -sass-debug-info{filename{}line{font-family:\00003279}}
 #table_rect {
   position: absolute;
   left: 5%;
@@ -306,7 +302,7 @@ input#treatyName {
   border-radius: 4px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003297}}
+@media -sass-debug-info{filename{}line{font-family:\00003294}}
 #middle_rect {
   position: absolute;
   left: 5%;
@@ -321,7 +317,7 @@ input#treatyName {
   border-radius: 2px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003312}}
+@media -sass-debug-info{filename{}line{font-family:\00003309}}
 #table1 {
   position: absolute;
   left: 5%;
@@ -332,7 +328,7 @@ input#treatyName {
   height: 100%;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003322}}
+@media -sass-debug-info{filename{}line{font-family:\00003319}}
 #table_header {
   position: absolute;
   position: absolute;
@@ -348,7 +344,7 @@ input#treatyName {
   border-radius: 4px;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003338}}
+@media -sass-debug-info{filename{}line{font-family:\00003335}}
 h3 {
   font-family: "Helvetica";
   line-height: 29px;
@@ -357,7 +353,7 @@ h3 {
   color: #2E4459;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003347}}
+@media -sass-debug-info{filename{}line{font-family:\00003344}}
 #top {
   font-family: Helvetica;
   line-height: 29px;
@@ -365,7 +361,7 @@ h3 {
   color: #2E4459;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003354}}
+@media -sass-debug-info{filename{}line{font-family:\00003351}}
 #main_rect {
   position: absolute;
   width: 100%;
@@ -379,7 +375,7 @@ h3 {
   box-sizing: border-box;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003368}}
+@media -sass-debug-info{filename{}line{font-family:\00003365}}
 #left {
   font-family: "Open Sans";
   font-style: normal;
@@ -392,7 +388,7 @@ h3 {
   color: black;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003381}}
+@media -sass-debug-info{filename{}line{font-family:\00003378}}
 #middle {
   font-family: "Open Sans";
   font-style: normal;
@@ -405,7 +401,7 @@ h3 {
   color: black;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003395}}
+@media -sass-debug-info{filename{}line{font-family:\00003392}}
 #right {
   font-family: "Open Sans";
   font-style: normal;
@@ -418,25 +414,25 @@ h3 {
   padding-left: 2%;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003408}}
+@media -sass-debug-info{filename{}line{font-family:\00003405}}
 #left.header {
   font-size: 18px;
   color: white;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003414}}
+@media -sass-debug-info{filename{}line{font-family:\00003411}}
 #right.header {
   font-size: 18px;
   color: white;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003420}}
+@media -sass-debug-info{filename{}line{font-family:\00003417}}
 #middle.header {
   font-size: 18px;
   color: white;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003426}}
+@media -sass-debug-info{filename{}line{font-family:\00003423}}
 #title {
   position: absolute;
   top: 0%;
@@ -452,7 +448,7 @@ h3 {
   color: #000000;
 }
 
-@media -sass-debug-info{filename{}line{font-family:\00003443}}
+@media -sass-debug-info{filename{}line{font-family:\00003440}}
 #subtitle {
   position: relative;
   top: 30%;
