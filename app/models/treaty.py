@@ -23,6 +23,7 @@ class Right(db.Model):
     disc= db.Column(db.String(80), unique = False, nullable = True)
     ttor = db.relationship("TreatyToRight", uselist=False, backref="Right")
     result = db.relationship("Results", uselist=False, backref="Right")
+    tfc = db.Column(db.Integer, db.ForeignKey('TreatyForumCountry.id'))
 
     #cat = category, subcat = subcategory, disc = discrimination.
     def __repr__(self):
@@ -108,3 +109,20 @@ class TreatyToCountry(db.Model):
 
     def __init__(self, cid, tid, date):
         self.date = date
+
+class TreatyForumCountry(db.Model):
+    __tablename__ = 'TreatyForumCountry'
+    id = db.Column(db.Integer, primary_key=True)
+    treaty = db.Column(db.String(100))
+    country = db.Column(db.String(80))
+    url = db.Column(db.String(1000))
+    forum = db.Column(db.String(1000))
+    date = db.Column(db.String(1000))
+    right = db.relationship("Right")
+
+    def __init__(self, treaty, forum, country, date, url):
+        self.treaty = treaty
+        self.forum = forum
+        self.country = country
+        self.date = date
+        self.url = url

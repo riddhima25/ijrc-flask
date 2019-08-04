@@ -87,11 +87,12 @@ def add_init_data(csv_file_name):
             rid = views.add_right(right, subcat, disc)
             cid = views.add_country(country)
             tid = views.add_treaty(treaty, link)
+            tfc_id = views.add_tfc(treaty, forum, country, link, date)
             views.add_ttof(fid, tid)
             #print(cid)
             #print(tid)
-            #views.add_ttoc(0, 0, '01/01/1998')
-            #views.add_ttor(rid, tid)
+            views.add_ttoc(0, 0, '01/01/1998')
+            views.add_ttor(rid, tid)
             line_count += 1
         print('Processed {line_count} lines'.format(line_count=line_count))
 

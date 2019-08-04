@@ -3,8 +3,8 @@ from sqlalchemy import or_
 
 from app.models import EditableHTML
 from .. import db
-from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results, Treaty
-from .forms import TreatySearchForm
+from ..models import Right, Forum, Country, TreatyToCountry, TreatyToRight, TreatyToForum, Results, Treaty, TreatyForumCountry
+from .forms import TreatySearchForm, FilterForm
 from datetime import datetime
 
 main = Blueprint('main', __name__)
@@ -35,13 +35,17 @@ def about():
 @main.route('/search', methods=['GET', 'POST'])
 def search(results=None):
   search = TreatySearchForm(request.form)
-  results = []
-  defaultQuery = db.session.query(TreatyToForum).join(Treaty, Treaty.id == TreatyToForum.tid).add_columns(Treaty.name, TreatyToForum.id).join(Forum, Forum.id==TreatyToForum.fid).add_columns(Forum.name.label("Forum"))# Initially, display all results
+  filtering = FilterForm(request.form)
+  query = db.session.query(TreatyForumCountry)
+  results = query.all()
+  #defaultQuery = db.session.query(TreatyToForum).join(Treaty, Treaty.id == TreatyToForum.tid).add_columns(Treaty.name, TreatyToForum.id).join(Forum, Forum.id==TreatyToForum.fid).add_columns(Forum.name.label("Forum"))# Initially, display all results
   # The default result query below does not return any values
   #defaultResults = db.session.query(TreatyToCountry).join(Treaty, Treaty.id == TreatyToCountry.tid).add_columns(Treaty.name, TreatyToCountry.id).join(Country, Country.id==TreatyToCountry.cid).add_columns(Forum.name.label("Forum"))# Initially, display all results
 
-  #forums = [(forum.name, forum.name) for forum in Forum.query.all()]
-  #search.forum.choices = forums
+  forums = [(treaty.forum, treaty.forum) for treaty in TreatyForumCountry.query.all()]
+  countries = [(treaty.country, treaty.country) for treaty in TreatyForumCountry.query.all()]
+  filtering.forum.choices =  filtering.forum.choices + forums
+  filtering.country.choices = filtering.country.choices + countries
 
   categories = []
   subcategories = []
@@ -56,16 +60,19 @@ def search(results=None):
       discriminations.append(right.disc)
 
   if request.method == 'POST':
-    query = defaultQuery.filter(Treaty.name.contains(search.data['treatyName']))
+    if search.data['treatyName']:
+      query = query.filter(TreatyForumCountry.treaty.contains(search.data['treatyName']))
+    if filtering.data['forum']:
+      query = query.filter_by(forum=filtering.data['forum'])
+    if filtering.data['country']:
+      query = query.filter_by(country=filtering.data['country'])
     #if search.data['forum']:
        #query = query.filter(Forum.name == search.data['forum'])
     results = query.all()
-    return render_template('/main/admin.html', results=results, form=search, categories=categories, subcategories=subcategories,
-    discriminations=discriminations)
-  
-  
+    return render_template('/main/admin.html', results=results, filtering=filtering, search=search, categories=categories, subcategories=subcategories,
+    discriminations=discriminations) 
     
-  return render_template('main/admin.html', results = results, form = search, categories=categories, subcategories=subcategories,
+  return render_template('main/admin.html', results=results, filtering=filtering, search=search, categories=categories, subcategories=subcategories,
     discriminations=discriminations)
 
 
@@ -141,6 +148,17 @@ def add_country(n):
     db.session.add(country)
     db.session.commit()
     return Country.query.filter_by(name=n).with_entities(Country.id).first()[0]
+  else:
+    return result[0]
+
+@main.route('/add/tfc/<string:t>/<string:f>/<string:c>/<string:u>/<string:d>')
+def add_tfc(t, f, c, u, d):
+  result = TreatyForumCountry.query.filter_by(treaty=t, forum=f, country=c, url=u, date=d).with_entities(TreatyForumCountry.id).first()
+  if result is None:
+    tfc = TreatyForumCountry(treaty=t, forum=f, country=c, date=d, url=u)
+    db.session.add(tfc)
+    db.session.commit()
+    return TreatyForumCountry.query.filter_by(treaty=t, forum=f, country=c, url=u, date=d).with_entities(TreatyForumCountry.id).first()[0]
   else:
     return result[0]
 

@@ -8,9 +8,9 @@
     <div class="search col-md-12">
       {% from "macros/_formhelpers.html" import render_field %}
       <form method=post class="search-bar">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" placeholder="Search by Treaty"/>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <dl>
-          {{ render_field(form.treatyName) }}
+          {{ render_field(search.treatyName) }}
         </dl>
       </form>
     </div>
@@ -22,55 +22,15 @@
       <button class="btn admin-treaty-button">Add New Treaty</button>
       <div class="search-filters">
         <div class = "filter">
-            
-        </div>
-        <div class = "filter">
-          <h6>Category</h6>
-          <select name="category filter-dropdown">
-              {% for category in categories %}
-              <option value="hr_1">{{ category }}</option>
-              {% endfor %}
-          </select>
-        </div>
-        <hr>
-        <div class = "filter">
-          <h6>Subcategory</h6>
-          <select name="subcategory filter-dropdown">
-              {% for subcategory in subcategories %}
-              <option value="hr_1">{{ subcategory }}</option>
-              {% endfor %}
-          </select>
-        </div>
-        <hr>
-        <div class = "filter">
-          <h6>Country</h6>
-          <select name="category">
-              <option value="hr_1">Country</option>
-              <option value="hr_2">Rigths</option>
-              <option value="hr_3">Violation</option>
-          </select>
-        </div>
-        <hr>
-        <div class = "filter">
-          <h6>Discrimnation Bases</h6>
-          <select name="category">
-              {% for discrimination in discriminations %}
-              <option value="hr_1">{{ discrimination }}</option>
-              {% endfor %}
-          </select>
-        </div>
-        <hr>
-        <div class = "filter">
-          <h6>Governing Body</h6>
-          <select name="category">
-              <option value="hr_1">Country</option>
-              <option value="hr_2">Rigths</option>
-              <option value="hr_3">Violation</option>
-          </select>
-        </div>
-        <hr>
-        <div class = "category">
-          <button>APPLY FILTER</button>
+            <form method=post>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <dl>
+                {{ render_field(filtering.forum) }}
+                <hr>
+                {{ render_field(filtering.country) }}
+              </dl>
+              <input type="submit" value=Filter name="forum">
+            </form>
         </div>
       </div>
     </div>
@@ -85,10 +45,9 @@
           {% for result in results %}
             <button class="search-accordion">
               <div class="row">
-                <div class="col-md-4">{{ result.id }}</div>
-                <div class="col-md-4">{{ result.name }}</div>
-                <div class="col-md-4">{{ result.Forum }}</div>
-
+                <div class="col-md-6 col-lg-6">{{ result.treaty }}</div>
+                <div class="col-md-3 col-lg-3">{{ result.country }}</div>
+                <div class="col-md-3 col-lg-3">{{ result.date }}</div>
               </div>      
             </button>
             <div class="treaty-panel">
